@@ -1,0 +1,11 @@
+/assets/*
+  Access-Control-Allow-Origin: *
+  X-Robots-Tag: nosnippet
+  Cache-Control: public, max-age=31536000
+
+/images/*
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=31536000
+
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
