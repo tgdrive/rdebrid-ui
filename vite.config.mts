@@ -29,6 +29,7 @@ export default defineConfig({
     },
   },
   build: {
+    outDir: "build/client",
     minify: "terser",
     terserOptions: {
       compress: {
