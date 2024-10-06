@@ -11,7 +11,7 @@ import {
 import { useSelectModalStore } from "@/ui/utils/store";
 import { FileSelectModal } from "@/ui/components/debrid-list";
 import clsx from "clsx";
-import { SideNav } from "../components/side-nav";
+import { SideNav } from "@/ui/components/side-nav";
 import { type ReactNode, useEffect } from "react";
 
 const checkAuth = async (queryClient: QueryClient, location: ParsedLocation, preload: boolean) => {
