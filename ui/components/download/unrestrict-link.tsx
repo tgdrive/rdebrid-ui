@@ -14,7 +14,7 @@ const initialformState = {
 };
 
 export const UnRestrictLink = () => {
-  const { fileId } = useSearch({ from: "/_authenticated/downloader/$tabId" });
+  const { fileId, restrictedId } = useSearch({ from: "/_authenticated/downloader/$tabId" });
 
   const { data } = useQuery(debridTorrentQueryOptions(fileId));
 
@@ -45,7 +45,10 @@ export const UnRestrictLink = () => {
     if (data) {
       setValue("links", data.links.join("\n"));
     }
-  }, [data]);
+    if (restrictedId) {
+      setValue("links", `https://real-debrid.com/d/${restrictedId}`);
+    }
+  }, [data, restrictedId]);
 
   useEffect(() => {
     return () => {

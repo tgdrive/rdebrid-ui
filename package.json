@@ -27,7 +27,7 @@
     "@types/magnet-uri": "^5.1.5",
     "bencode": "^4.0.0",
     "clsx": "^2.1.1",
-    "feaxios": "^0.0.20",
+    "feaxios": "^0.0.22",
     "filesize": "^10.1.6",
     "framer-motion": "^11.11.1",
     "hono": "^4.6.3",

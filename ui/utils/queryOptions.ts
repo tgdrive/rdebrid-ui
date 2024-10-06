@@ -24,7 +24,7 @@ export const debridItemsQueryOptions = (params: DebridParams) =>
     queryKey: ["debrid", params],
     queryFn: async ({ signal }) => getDebridItems(params, signal),
     placeholderData: keepPreviousData,
-    refetchInterval: params.page === 1 && params.type === "torrents" ? 5 * 1000 : false,
+    // refetchInterval: params.page === 1 && params.type === "torrents" ? 5 * 1000 : false,
   });
 
 export const debridTorrentQueryOptions = (id?: string) =>
@@ -32,6 +32,13 @@ export const debridTorrentQueryOptions = (id?: string) =>
     queryKey: ["debrid", "torrents", id],
     queryFn: async ({ signal }) => getDebridTorrent(id!, signal),
     enabled: !!id,
+    select: (data) => {
+      const selectedFiles = data.files?.filter((file) => file.selected === 1) || [];
+      for (let i = 0; i < selectedFiles.length; i++) {
+        data.files![selectedFiles[i].id - 1].link = data.links[i];
+      }
+      return data;
+    },
   });
 
 export const debridUnlockTorrentOptions = (link: string, enabled = false) =>

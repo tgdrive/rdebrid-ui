@@ -1,14 +1,16 @@
 import type React from "react";
-import { useState, useCallback, useMemo, act, useEffect } from "react";
+import { useState, useCallback } from "react";
 import ChevronRightIcon from "~icons/heroicons/chevron-right-solid";
 import FolderIcon from "~icons/heroicons/folder-solid";
 
 import { motion } from "framer-motion";
 import { Button, Checkbox } from "@nextui-org/react";
 import type { DebridTorrent, FileNode } from "@/types";
-import { useSelectModalStore } from "../utils/store";
+import { useSelectModalStore } from "@/ui/utils/store";
+import DownloadIcon from "~icons/heroicons/arrow-down-20-solid";
+import { ForwardLink } from "./forward-link";
 
-interface FilesystemItemProps {
+interface DebridTorrentItemProps {
   node: FileNode;
   path: string;
   status: DebridTorrent["status"];
@@ -16,13 +18,13 @@ interface FilesystemItemProps {
   onSelectionChange: (path: string, isSelected: boolean) => void;
 }
 
-export function FilesystemItem({
+export function DebridTorrentItem({
   node,
   path,
   status,
   selectedPaths,
   onSelectionChange,
-}: FilesystemItemProps) {
+}: DebridTorrentItemProps) {
   const [isOpen, setIsOpen] = useState(true);
   const fullPath = path ? `${path}/${node.name}` : node.name;
   const isSelected = selectedPaths.has(fullPath);
@@ -61,14 +63,30 @@ export function FilesystemItem({
             </motion.span>
           </Button>
         )}
-        {node.nodes && <FolderIcon className="size-6 text-yellow-300" />}
+        {node.nodes && <FolderIcon className="size-6 text-primary-500" />}
+        {(!node.nodes || node.nodes.length === 0) && isSelected && (
+          <Button
+            title="Unrestrict Link"
+            as={ForwardLink}
+            to="/downloader/$tabId"
+            target="_blank"
+            rel="noopener noreferrer"
+            params={{ tabId: "links" }}
+            search={{ restrictedId: node.link?.split("/").pop() }}
+            variant="light"
+            isIconOnly
+            className="data-[hover=true]:bg-transparent w-6 h-6 min-w-6"
+          >
+            <DownloadIcon />
+          </Button>
+        )}
         {node.name}
       </span>
 
       {isOpen && node.nodes && (
         <ul className="pl-6 overflow-hidden flex flex-col justify-end">
           {node.nodes.map((childNode) => (
-            <FilesystemItem
+            <DebridTorrentItem
               node={childNode}
               key={childNode.name}
               path={fullPath}
@@ -83,7 +101,7 @@ export function FilesystemItem({
   );
 }
 
-export function FilesystemTree({
+export function DebridTorrentTree({
   rootNode,
   status,
 }: { rootNode: FileNode; status: DebridTorrent["status"] }) {
@@ -137,7 +155,7 @@ export function FilesystemTree({
 
   return (
     <ul>
-      <FilesystemItem
+      <DebridTorrentItem
         node={rootNode}
         key={rootNode.name}
         path=""

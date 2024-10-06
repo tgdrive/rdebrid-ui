@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import type { DebridTorrent, DebridTorrentFile, DebridUnlock, FileNode } from "@/types";
-import { copyDataToClipboard, size, size2round } from "@/ui/utils/common";
+import { size, size2round } from "@/ui/utils/common";
 import {
   debridAvailabilityOptions,
   debridItemsQueryOptions,
@@ -29,19 +29,16 @@ import DownloadIcon from "~icons/material-symbols/download";
 import MdiError from "~icons/mdi/error";
 import EyeIcon from "~icons/mdi/eye";
 import PlayIcon from "~icons/mdi/play-outline";
-import PhMagnetStraight from "~icons/ph/magnet-straight";
-import UnlockIcon from "~icons/lucide/unlock";
 import TadpoleIcon from "~icons/svg-spinners/tadpole";
 import { ForwardLink } from "./forward-link";
-import { FilesystemTree } from "./file-tree";
-import PhSelectionFill from "~icons/ph/selection-fill";
+import { DebridTorrentTree } from "./file-tree";
+import SelectIcon from "~icons/grommet-icons/select";
 import { useDebridStore, useSelectModalStore } from "@/ui/utils/store";
 import ChevronRight from "~icons/mdi/chevron-right";
 import { CopyButton } from "./copy-button";
 import OpenLinkIcon from "~icons/fluent/open-24-regular";
 import SelectAllIcon from "~icons/fluent/select-all-on-16-filled";
 import SelectMode from "~icons/ic/round-select-all";
-import { getQueryClient } from "../utils/queryClient";
 
 const paginationItemClass = "bg-white/5 [&[data-hover=true]:not([data-active=true])]:bg-white/10";
 
@@ -60,14 +57,14 @@ const getSelectedIds = (rootNode: FileNode, selectedPaths: Set<string>) => {
   return selectedIds;
 };
 
-function pathsToTree(items?: DebridTorrentFile[]) {
+function pathsToTree(data?: DebridTorrent) {
   const root: FileNode = { name: "root", nodes: [] };
 
-  if (!items) {
+  if (!data?.files) {
     return root;
   }
 
-  items.forEach((item: DebridTorrentFile) => {
+  data.files.forEach((item: DebridTorrentFile) => {
     const parts: string[] = item.path.replace(/^\//, "").split("/");
     let currentNode: FileNode = root;
 
@@ -84,7 +81,9 @@ function pathsToTree(items?: DebridTorrentFile[]) {
         childNode = {
           name: part,
           id: index === parts.length - 1 ? item.id : undefined,
+          link: item.link,
         };
+
         if (!currentNode.nodes) {
           currentNode.nodes = [];
         }
@@ -117,7 +116,7 @@ export function FileSelectModal() {
     ],
   });
 
-  const rootNode = useMemo(() => pathsToTree(data?.files), [data?.files]);
+  const rootNode = useMemo(() => pathsToTree(data), [data?.files]);
 
   const [currentAvaliability, setCurrentAvaliability] = useState(0);
 
@@ -168,7 +167,7 @@ export function FileSelectModal() {
                       {item.filename}
                     </h2>
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between h-10">
                     <span className="flex text-sm">
                       <h2>Size :&nbsp;</h2>
                       <h2 className="font-bold">{size2round(item.bytes)}</h2>
@@ -182,6 +181,7 @@ export function FileSelectModal() {
                           </p>
                           <Button
                             isIconOnly
+                            size="sm"
                             className="bg-white/5 rounded-full"
                             onPress={() => {
                               setCurrentAvaliability(
@@ -199,7 +199,7 @@ export function FileSelectModal() {
                   {isLoading ? (
                     <TadpoleIcon className="absolute left-1/2 top-1/2 size-10 -translate-x-1/2 -translate-y-1/2" />
                   ) : (
-                    <FilesystemTree rootNode={rootNode} status={item.status} />
+                    <DebridTorrentTree rootNode={rootNode} status={item.status} />
                   )}
                 </div>
               </ModalBody>
@@ -283,9 +283,7 @@ const TorrentListItem = memo(({ item }: TorrentListItemProps) => {
         {item.status === "uploading" && <LineMdUploadingLoop className="size-6" />}
         {item.status === "downloaded" && <EpSuccessFilled className="size-6 text-success" />}
         {item.status === "error" && <MdiError className="size-6 text-danger" />}
-        {item.status === "waiting_files_selection" && (
-          <PhSelectionFill className="size-6 text-yellow-500" />
-        )}
+        {item.status === "waiting_files_selection" && <SelectIcon className="size-6 " />}
         <p className="text-bold text-sm truncate capitalize">
           {item.progress}
           {"%"}
@@ -314,11 +312,8 @@ const TorrentListItem = memo(({ item }: TorrentListItemProps) => {
           params={{ tabId: "links" }}
           title="Unrestict Links"
           className="data-[hover=true]:bg-transparent"
-          onMouseEnter={() => {
-            getQueryClient().setQueryData(["debrid", "torrents", item.id], item);
-          }}
         >
-          <UnlockIcon />
+          <DownloadIcon />
         </Button>
 
         <CopyButton title="Copy Links" value={item.links.length > 0 ? item.links.join("\n") : ""} />
@@ -327,7 +322,6 @@ const TorrentListItem = memo(({ item }: TorrentListItemProps) => {
           variant="light"
           isIconOnly
           title="Delete"
-          color="danger"
           onPress={() => mutation.mutate()}
           className="data-[hover=true]:bg-transparent"
         >
@@ -430,7 +424,6 @@ export const DownloadListItem = memo(({ item }: DownloadListItemProps) => {
           variant="light"
           title={"Delete Link"}
           isIconOnly
-          color="danger"
           onClick={() => mutation.mutate()}
           className="data-[hover=true]:bg-transparent"
         >

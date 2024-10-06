@@ -20,7 +20,7 @@ const Profile = ({ session: { user } }: { session: Session }) => {
     <Dropdown
       placement="bottom-end"
       classNames={{
-        content: "bg-background/80",
+        content: "bg-background/100",
       }}
     >
       <DropdownTrigger>

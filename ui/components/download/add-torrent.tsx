@@ -4,7 +4,6 @@ import UploadIcon from "~icons/material-symbols/upload";
 import { useCallback, useRef, useState } from "react";
 import { magnetRegex } from "@/ui/utils/common";
 import http from "@/ui/utils/http";
-import { decodeTorrentFile, toMagnetURI } from "@/ui/utils/parse-torrent";
 import { debridTorrentQueryOptions } from "@/ui/utils/queryOptions";
 import { useSelectModalStore } from "@/ui/utils/store";
 import { useQueryClient } from "@tanstack/react-query";
@@ -16,6 +15,7 @@ const initialformState = {
   torrentPath: "",
   magnet: "",
   hash: "",
+  torrentBytes: null as ArrayBuffer | null,
 };
 
 export const AddTorrent = () => {
@@ -32,33 +32,47 @@ export const AddTorrent = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = useCallback(async (data: typeof initialformState) => {
-    if (data.magnet) {
-      try {
-        setIsSubmitting(true);
+    try {
+      let id = "";
+      setIsSubmitting(true);
+      if (data.magnet) {
         if (!magnetRegex.test(data.magnet)) {
           const buffer = await http.get<ArrayBuffer>("/api/cors", {
             responseType: "arrayBuffer",
             params: { link: data.magnet },
           });
-          data.magnet = toMagnetURI((await decodeTorrentFile(new Uint8Array(buffer.data))) as any);
+          data.torrentBytes = buffer.data;
+        } else {
+          const res = (
+            await http.postForm<{ id: string }>("/torrents/addMagnet", {
+              magnet: data.magnet,
+            })
+          ).data;
+          id = res.id;
         }
+      }
+      if (data.torrentBytes) {
         const res = (
-          await http.postForm<{ id: string; uri: string }>("/torrents/addMagnet", {
-            magnet: data.magnet,
+          await http.put<{ id: string }>("/torrents/addTorrent", data.torrentBytes, {
+            params: { host: "real-debrid.com" },
+            headers: {
+              "Content-Type": "application/octet-stream",
+            },
           })
         ).data;
-        const torrent = await queryClient.ensureQueryData(debridTorrentQueryOptions(res.id));
-        actions.setCurrentItem(torrent);
-        actions.setOpen(true);
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        } else if (error instanceof AxiosError) {
-          toast.error(error.response?.data?.message);
-        }
-      } finally {
-        setIsSubmitting(false);
+        id = res.id;
       }
+      const torrent = await queryClient.ensureQueryData(debridTorrentQueryOptions(id));
+      actions.setCurrentItem(torrent);
+      actions.setOpen(true);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message);
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   }, []);
 
@@ -67,9 +81,10 @@ export const AddTorrent = () => {
     if (file) {
       setValue("torrentPath", file.name);
       file.arrayBuffer().then((buffer) => {
-        decodeTorrentFile(new Uint8Array(buffer)).then((torrent) => {
-          setValue("magnet", toMagnetURI(torrent as any));
-        });
+        setValue("torrentBytes", buffer);
+        // decodeTorrentFile(byteArray).then((torrent) => {
+        //   setValue("magnet", toMagnetURI(torrent as any));
+        // });
       });
     }
   }, []);

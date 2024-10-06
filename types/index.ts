@@ -11,6 +11,7 @@ export type DebridTorrentFile = {
   path: string;
   bytes: number;
   selected: 0 | 1;
+  link?: string;
 };
 
 export interface DebridTorrent {
@@ -88,6 +89,7 @@ export interface FileNode {
   name: string;
   nodes?: FileNode[];
   id?: number;
+  link?: string;
 }
 
 export type DownloadTab = "links" | "torrents" | "avaliability";

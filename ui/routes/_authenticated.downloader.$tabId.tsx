@@ -9,7 +9,8 @@ import { capitalize } from "@/ui/utils/common";
 
 export const Route = createFileRoute("/_authenticated/downloader/$tabId")({
   component: memo(Component),
-  validateSearch: (search: Record<string, unknown>) => search as { fileId?: string },
+  validateSearch: (search: Record<string, unknown>) =>
+    search as { fileId?: string; restrictedId?: string },
   loaderDeps: ({ search }) => ({ search }),
   meta: ({ params }) => [
     {

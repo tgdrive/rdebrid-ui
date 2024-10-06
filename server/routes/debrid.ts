@@ -18,7 +18,10 @@ router.use("*", async (c) => {
   const headers = new Headers();
   headers.set("Authorization", `Bearer ${c.env.DEBRID_TOKEN || user?.access_token}`);
 
-  if (methods.find((method) => method === c.req.method)) {
+  if (
+    methods.find((method) => method === c.req.method) &&
+    c.req.header("content-type") !== "application/octet-stream"
+  ) {
     const body = await c.req.parseBody();
     const ip = c.req.header("CF-Connecting-IP") as string;
     if (ip) {
@@ -42,6 +45,10 @@ router.use("*", async (c) => {
   const res = await fetch(url.toString(), {
     method: c.req.method,
     headers: headers,
+    ...(methods.find((method) => method === c.req.method) && {
+      body: c.req.raw.body,
+      duplex: "half",
+    }),
   });
   const resHeaders = new Headers(res.headers);
   resHeaders.delete("Content-Encoding");

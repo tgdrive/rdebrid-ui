@@ -5,9 +5,6 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   plugins: [tsconfigPaths()],
-  preview: {
-    cors: true,
-  },
   build: {
     lib: {
       entry: path.resolve(__dirname, "server/index.ts"),
