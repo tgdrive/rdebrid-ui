@@ -24,7 +24,7 @@ export const debridItemsQueryOptions = (params: DebridParams) =>
     queryKey: ["debrid", params],
     queryFn: async ({ signal }) => getDebridItems(params, signal),
     placeholderData: keepPreviousData,
-    // refetchInterval: params.page === 1 && params.type === "torrents" ? 5 * 1000 : false,
+    refetchInterval: params.page === 1 && params.type === "torrents" ? 5 * 1000 : false,
   });
 
 export const debridTorrentQueryOptions = (id?: string) =>
