@@ -1,11 +1,18 @@
 import { Navbar } from "@/ui/components/navbar";
 import { sessionQueryOptions } from "@/ui/utils/queryOptions";
 import type { QueryClient } from "@tanstack/react-query";
-import { createFileRoute, Outlet, type ParsedLocation, redirect } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  type ParsedLocation,
+  redirect,
+  useMatches,
+} from "@tanstack/react-router";
 import { useSelectModalStore } from "@/ui/utils/store";
 import { FileSelectModal } from "@/ui/components/debrid-list";
 import clsx from "clsx";
 import { SideNav } from "../components/side-nav";
+import { type ReactNode, useEffect } from "react";
 
 const checkAuth = async (queryClient: QueryClient, location: ParsedLocation, preload: boolean) => {
   if (preload) {
@@ -22,6 +29,17 @@ const checkAuth = async (queryClient: QueryClient, location: ParsedLocation, pre
     });
   }
 };
+
+function Meta({ children }: { children: ReactNode }) {
+  const matches = useMatches();
+  const meta = matches.at(-1)?.meta?.find((meta) => meta.title);
+
+  useEffect(() => {
+    document.title = meta?.title || "Real Debrid";
+  }, [meta]);
+
+  return children;
+}
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthenticatedLayout,
@@ -42,7 +60,9 @@ function AuthenticatedLayout() {
           )}
           data-scroll-restoration-id="scroll"
         >
-          <Outlet />
+          <Meta>
+            <Outlet />
+          </Meta>
         </main>
         {open && <FileSelectModal />}
       </div>

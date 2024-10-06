@@ -1,6 +1,7 @@
 import HomeOutline from "~icons/ion/home-outline";
 import HomeFilled from "~icons/ion/home";
-import DownloadCloud from "~icons/lucide/cloud-download";
+import DownloadOutline from "~icons/mingcute/download-3-line";
+import DownloadFilled from "~icons/mingcute/download-3-fill";
 import TorrentFilled from "~icons/simple-icons/bittorrent";
 import TorrentOutline from "~icons/arcticons/bittorrent";
 
@@ -11,8 +12,8 @@ export const siteConfig = {
     {
       id: "home",
       label: "Home",
-      path: "/",
-      params: { page: 1, limit: 50 },
+      path: "/downloader/links",
+      search: {},
       icon: HomeOutline,
       activeIcon: HomeFilled,
     },
@@ -20,23 +21,23 @@ export const siteConfig = {
       id: "torrents",
       label: "Torrents",
       path: "/view",
-      params: {
+      search: {
         type: "torrents",
         page: 1,
       },
-      icon: TorrentFilled,
-      activeIcon: TorrentOutline,
+      icon: TorrentOutline,
+      activeIcon: TorrentFilled,
     },
     {
       id: "downloads",
       label: "DLoads",
       path: "/view",
-      params: {
+      search: {
         type: "downloads",
         page: 1,
       },
-      icon: DownloadCloud,
-      activeIcon: DownloadCloud,
+      icon: DownloadOutline,
+      activeIcon: DownloadFilled,
     },
   ],
 } as const;

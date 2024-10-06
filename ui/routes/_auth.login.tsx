@@ -1,8 +1,9 @@
 import { memo, useCallback } from "react";
 import { signIn } from "@hono/auth-js/react";
-import { Button, Card, CardBody } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { loginQuery } from "@/ui/utils/schema";
+import { buttonClasses } from "@/ui/utils/classes";
 
 export const Logincomponent = memo(() => {
   const params = useSearch({ from: "/_auth/login" });
@@ -13,13 +14,13 @@ export const Logincomponent = memo(() => {
 
   return (
     <div className="pt-16">
-      <Card className="m-auto flex h-48 max-w-sm flex-row  justify-center">
-        <CardBody className="m-auto">
-          <Button onPress={handleLogin} color="primary">
+      <div className="m-auto flex h-48 max-w-sm flex-row  justify-center bg-background rounded-lg shadow-lg">
+        <div className="m-auto">
+          <Button onPress={handleLogin} className={buttonClasses}>
             Sign In
           </Button>
-        </CardBody>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 });

@@ -16,7 +16,7 @@ router.use("*", async (c) => {
   url.port = "";
   url.pathname = `/rest/1.0${url.pathname.replace("/api/debrid", "")}`;
   const headers = new Headers();
-  headers.set("Authorization", `Bearer ${user?.accessToken}`);
+  headers.set("Authorization", `Bearer ${user?.access_token}`);
 
   if (methods.find((method) => method === c.req.method)) {
     const body = await c.req.parseBody();

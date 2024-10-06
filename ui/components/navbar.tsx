@@ -17,7 +17,12 @@ import { ForwardLink } from "./forward-link";
 
 const Profile = ({ session: { user } }: { session: Session }) => {
   return (
-    <Dropdown placement="bottom-end">
+    <Dropdown
+      placement="bottom-end"
+      classNames={{
+        content: "bg-background/80",
+      }}
+    >
       <DropdownTrigger>
         <Avatar
           isBordered
@@ -29,15 +34,18 @@ const Profile = ({ session: { user } }: { session: Session }) => {
           src={user?.image ?? "https://i.pravatar.cc/150?u=a042581f4e29026704d"}
         />
       </DropdownTrigger>
-      <DropdownMenu aria-label="Profile Actions" variant="flat">
+      <DropdownMenu
+        aria-label="Profile Actions"
+        itemClasses={{
+          base: ["data-[hover=true]:bg-white/5"],
+        }}
+      >
         <DropdownItem key="profile" className="h-14 gap-2">
           <p className="font-semibold">Signed in as</p>
           <p className="font-semibold">{user?.name}</p>
         </DropdownItem>
-        <DropdownItem key="team_settings">Settings</DropdownItem>
         <DropdownItem
           key="logout"
-          color="danger"
           onPress={() => signOut({ callbackUrl: `${window.location.origin}/login` })}
         >
           Log Out
@@ -60,8 +68,13 @@ export const Navbar = () => {
       }}
     >
       <NavbarContent>
-        <NavbarBrand className="flex max-w-20 cursor-pointer gap-2" as={ForwardLink} to="/">
-          <p className="font-bold text-inherit">Debrid</p>
+        <NavbarBrand
+          className="flex max-w-20 cursor-pointer gap-2"
+          as={ForwardLink}
+          to="/downloader/$tabId"
+          params={{ tabId: "links" }}
+        >
+          <p className="font-bold text-inherit">RDebrid</p>
         </NavbarBrand>
       </NavbarContent>
 

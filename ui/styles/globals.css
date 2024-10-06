@@ -19,3 +19,6 @@
   background-image: radial-gradient(at 47% 33%, hsla(145, 19%, 36%, 0.12) 0, transparent 59%),
     radial-gradient(at 82% 65%, hsl(218.0, 39%, 11%) 0, transparent 55%);
 }
+.art-video-player {
+  --art-control-height: 60px;
+}

@@ -10,6 +10,7 @@ import { useSelectModalStore } from "@/ui/utils/store";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { AxiosError } from "feaxios";
+import { buttonClasses } from "@/ui/utils/classes";
 
 const initialformState = {
   torrentPath: "",
@@ -120,7 +121,7 @@ export const AddTorrent = () => {
         <Button
           onPress={() => handleSubmit(onSubmit)()}
           isLoading={isSubmitting}
-          className="bg-white/5 data-[hover=true]:border-zinc-100 rounded-full border-2 border-transparent transition"
+          className={buttonClasses}
         >
           Add Torrent
         </Button>

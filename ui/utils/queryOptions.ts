@@ -16,6 +16,7 @@ export const sessionQueryOptions = queryOptions({
     const res = await http.get<Session>(`${window.location.origin}/api/auth/session`);
     return res.data;
   },
+  refetchInterval: 5 * 60 * 1000,
 });
 
 export const debridItemsQueryOptions = (params: DebridParams) =>

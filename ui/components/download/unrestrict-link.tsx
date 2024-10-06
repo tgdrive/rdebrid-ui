@@ -7,6 +7,7 @@ import { useSearch } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import type { DebridUnlock } from "@/types";
+import { buttonClasses } from "@/ui/utils/classes";
 
 const initialformState = {
   links: "",
@@ -53,10 +54,11 @@ export const UnRestrictLink = () => {
   }, []);
 
   return (
-    <div className="size-full flex gap-6 flex-col">
+    <form className="size-full flex gap-6 flex-col" onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-2">
         <Controller
           name="links"
+          rules={{ required: "Enter host links" }}
           control={control}
           render={({ field, fieldState: { error } }) => (
             <Textarea
@@ -72,14 +74,10 @@ export const UnRestrictLink = () => {
         />
       </div>
       <div className="flex items-center">
-        <Button
-          isLoading={status === "running"}
-          className="bg-white/5 data-[hover=true]:border-zinc-100 rounded-full border-2 border-transparent transition"
-          onPress={() => handleSubmit(onSubmit)()}
-        >
+        <Button type="submit" isLoading={status === "running"} className={buttonClasses}>
           Unrestrict
         </Button>
       </div>
-    </div>
+    </form>
   );
 };

@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import EpSuccessFilled from "~icons/ep/success-filled";
 import MdiError from "~icons/mdi/error";
+import { buttonClasses } from "@/ui/utils/classes";
 
 const initialformState = {
   magnet: "",
@@ -52,11 +53,7 @@ export const CheckAvaliability = () => {
         />
       </div>
       <div className="flex items-center gap-4">
-        <Button
-          onPress={onSubmit}
-          className="bg-white/5 data-[hover=true]:border-zinc-100 rounded-full border-2 border-transparent transition"
-          isLoading={isLoading}
-        >
+        <Button onPress={onSubmit} className={buttonClasses} isLoading={isLoading}>
           Check
         </Button>
         {isFetched ? (

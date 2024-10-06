@@ -6,7 +6,6 @@ Artplayer.LOG_VERSION = false;
 Artplayer.USE_RAF = true;
 interface PlayerProps {
   option: Option;
-  style: React.CSSProperties;
   getInstance?: (instance: Artplayer) => void;
 }
 
