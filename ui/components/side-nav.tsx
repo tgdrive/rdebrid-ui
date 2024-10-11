@@ -7,12 +7,12 @@ export const SideNav = () => {
     <aside
       className={clsx(
         "absolute bottom-0 left-0 md:top-20 z-50 flex gap-4 md:w-20 md:h-full md:flex-col items-center",
-        "w-full h-20 top-auto justify-around md:justify-start",
+        "w-full h-16 top-auto justify-around md:justify-start",
       )}
     >
       {siteConfig.navItems.map((item, _) => (
         <Link
-          className="flex items-center justify-center flex-col gap-2 size-16 hover:bg-white/5 rounded-lg group"
+          className="flex items-center justify-center flex-col gap-1 size-14 hover:bg-white/5 rounded-lg group"
           key={item.id}
           to={item.path}
           search={item.search as any}

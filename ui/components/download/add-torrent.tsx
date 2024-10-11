@@ -4,12 +4,13 @@ import UploadIcon from "~icons/material-symbols/upload";
 import { useCallback, useRef, useState } from "react";
 import { magnetRegex } from "@/ui/utils/common";
 import http from "@/ui/utils/http";
-import { debridTorrentQueryOptions } from "@/ui/utils/queryOptions";
+import { debridAvailabilityOptions, debridTorrentQueryOptions } from "@/ui/utils/queryOptions";
 import { useSelectModalStore } from "@/ui/utils/store";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { AxiosError } from "feaxios";
 import { buttonClasses } from "@/ui/utils/classes";
+import { Icons } from "@/ui/utils/icons";
 
 const initialformState = {
   torrentPath: "",
@@ -19,7 +20,7 @@ const initialformState = {
 };
 
 export const AddTorrent = () => {
-  const { control, handleSubmit, setValue } = useForm({
+  const { control, handleSubmit, setValue, getValues } = useForm({
     defaultValues: initialformState,
   });
 
@@ -30,6 +31,10 @@ export const AddTorrent = () => {
   const queryClient = useQueryClient();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { data, isFetched, isLoading, isRefetching, refetch } = useQuery(
+    debridAvailabilityOptions(getValues("magnet")),
+  );
 
   const onSubmit = useCallback(async (data: typeof initialformState) => {
     try {
@@ -125,6 +130,7 @@ export const AddTorrent = () => {
               {...field}
               isInvalid={!!error}
               errorMessage={error?.message}
+              autoComplete="off"
               variant="bordered"
               labelPlacement="outside"
               placeholder="Add torrent link or magnet"
@@ -132,7 +138,7 @@ export const AddTorrent = () => {
           )}
         />
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center gap-4">
         <Button
           onPress={() => handleSubmit(onSubmit)()}
           isLoading={isSubmitting}
@@ -140,6 +146,29 @@ export const AddTorrent = () => {
         >
           Add Torrent
         </Button>
+        <Button
+          onPress={() => refetch()}
+          className={buttonClasses}
+          isLoading={isLoading || isRefetching}
+          startContent={
+            !(isLoading || isRefetching) ? <Icons.TorrentFilled className="size-[20px]" /> : null
+          }
+        >
+          Avaliability
+        </Button>
+        {isFetched ? (
+          data?.avaliabilities && data.avaliabilities.length > 0 ? (
+            <span className="inline-flex items-center gap-2">
+              <Icons.Check className="text-success" />
+              <p className="text-sm">Avaliable</p>
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-2">
+              <Icons.Error className="text-danger" />
+              <p className="text-sm">Not Avaliable</p>
+            </span>
+          )
+        ) : null}
       </div>
     </div>
   );

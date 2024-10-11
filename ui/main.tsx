@@ -39,7 +39,7 @@ if (!rootElement.innerHTML) {
         <RouterProvider router={router} />
         <TailwindIndicator />
       </NextUIProvider>
-      <ReactQueryDevtools buttonPosition="bottom-right" />
+      {/* <ReactQueryDevtools buttonPosition="bottom-right" /> */}
     </QueryClientProvider>,
   );
 }

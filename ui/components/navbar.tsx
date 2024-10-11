@@ -1,33 +1,24 @@
 import { sessionQueryOptions } from "@/ui/utils/queryOptions";
 import type { Session } from "@auth/core/types";
 import { signOut } from "@hono/auth-js/react";
-import {
-  Avatar,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  Navbar as NextUINavbar,
-} from "@nextui-org/react";
+import { Avatar, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { ForwardLink } from "./forward-link";
+
+import { Link } from "@tanstack/react-router";
 
 const Profile = ({ session: { user } }: { session: Session }) => {
   return (
     <Dropdown
       placement="bottom-end"
       classNames={{
-        content: "bg-background/100",
+        content: "bg-dialog",
       }}
     >
       <DropdownTrigger>
         <Avatar
           isBordered
           as="button"
-          className="transition-transform"
+          className="transition-transform ring-white/10"
           name={user?.name ?? "Anonymous"}
           color="primary"
           size="sm"
@@ -59,32 +50,20 @@ export const Navbar = () => {
   const { data: session } = useSuspenseQuery(sessionQueryOptions);
 
   return (
-    <NextUINavbar
-      maxWidth="full"
-      position="static"
-      isBlurred={false}
-      classNames={{
-        base: "bg-transparent",
-      }}
-    >
-      <NavbarContent>
-        <NavbarBrand
-          className="flex max-w-20 cursor-pointer gap-2"
-          as={ForwardLink}
-          to="/downloader/$tabId"
-          params={{ tabId: "links" }}
-        >
-          <p className="font-bold text-inherit">RDebrid</p>
-        </NavbarBrand>
-      </NavbarContent>
+    <header className="h-12 flex w-full justify-between items-center px-6 pt-3">
+      <Link
+        className="flex max-w-20 cursor-pointer gap-2"
+        to="/downloader/$tabId"
+        params={{ tabId: "links" }}
+      >
+        <p className="font-bold text-inherit">Rdebrid</p>
+      </Link>
 
       {session && (
-        <NavbarContent className="items-center" justify="end">
-          <NavbarItem>
-            <Profile session={session} />
-          </NavbarItem>
-        </NavbarContent>
+        <div className="items-center">
+          <Profile session={session} />
+        </div>
       )}
-    </NextUINavbar>
+    </header>
   );
 };

@@ -92,7 +92,7 @@ export interface FileNode {
   link?: string;
 }
 
-export type DownloadTab = "links" | "torrents" | "avaliability";
+export type DownloadTab = "links" | "torrents";
 
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 

@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AddTorrent } from "@/ui/components/download/add-torrent";
-import { CheckAvaliability } from "@/ui/components/download/check-avaliability";
 import { UnRestrictLink } from "@/ui/components/download/unrestrict-link";
 import type { DownloadTab } from "@/types";
 import { memo } from "react";
@@ -30,8 +29,6 @@ function Component() {
   switch (tabId as DownloadTab) {
     case "torrents":
       return <AddTorrent />;
-    case "avaliability":
-      return <CheckAvaliability />;
     case "links":
       return <UnRestrictLink />;
     default:

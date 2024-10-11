@@ -1,8 +1,7 @@
 import type { FC } from "react";
 import { Button, type ButtonProps } from "@nextui-org/react";
 import { useClipboard } from "@nextui-org/use-clipboard";
-import CheckLinearIcon from "~icons/ic/round-check";
-import CiCopy from "~icons/ci/copy";
+import { Icons } from "@/ui/utils/icons";
 
 export interface CopyButtonProps extends ButtonProps {
   value?: string;
@@ -20,11 +19,11 @@ export const CopyButton: FC<CopyButtonProps> = ({ value, ...buttonProps }) => {
       onPress={() => copy(value)}
       {...buttonProps}
     >
-      <CheckLinearIcon
+      <Icons.CopySuccess
         className="absolute size-6 opacity-0 scale-50  data-[visible=true]:opacity-100 data-[visible=true]:scale-100 transition-transform-opacity"
         data-visible={copied}
       />
-      <CiCopy
+      <Icons.Copy
         className="absolute size-6 opacity-0 scale-50  data-[visible=true]:opacity-100 data-[visible=true]:scale-100 transition-transform-opacity"
         data-visible={!copied}
       />

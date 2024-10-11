@@ -21,24 +21,11 @@ import {
 } from "@nextui-org/react";
 import { useQueries, useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import EpSuccessFilled from "~icons/ep/success-filled";
-import LineMdDownloadingLoop from "~icons/line-md/downloading-loop";
-import LineMdUploadingLoop from "~icons/line-md/uploading-loop";
-import DeleteIcon from "~icons/material-symbols/delete";
-import DownloadIcon from "~icons/material-symbols/download";
-import MdiError from "~icons/mdi/error";
-import EyeIcon from "~icons/mdi/eye";
-import PlayIcon from "~icons/mdi/play-outline";
-import TadpoleIcon from "~icons/svg-spinners/tadpole";
 import { ForwardLink } from "./forward-link";
 import { DebridTorrentTree } from "./file-tree";
-import SelectIcon from "~icons/grommet-icons/select";
 import { useDebridStore, useSelectModalStore } from "@/ui/utils/store";
-import ChevronRight from "~icons/mdi/chevron-right";
 import { CopyButton } from "./copy-button";
-import OpenLinkIcon from "~icons/fluent/open-24-regular";
-import SelectAllIcon from "~icons/fluent/select-all-on-16-filled";
-import SelectMode from "~icons/ic/round-select-all";
+import { Icons } from "@/ui/utils/icons";
 
 const paginationItemClass = "bg-white/5 [&[data-hover=true]:not([data-active=true])]:bg-white/10";
 
@@ -152,7 +139,8 @@ export function FileSelectModal() {
         disableAnimation
         onOpenChange={onOpenChange}
         classNames={{
-          base: "max-w-[50rem] backdrop-blur-lg bg-background/50",
+          base: "max-w-[50rem] bg-dialog",
+          closeButton: "hover:bg-white/5",
         }}
       >
         <ModalContent>
@@ -189,7 +177,7 @@ export function FileSelectModal() {
                               );
                             }}
                           >
-                            <ChevronRight />
+                            <Icons.ChevronRight />
                           </Button>
                         </div>
                       )}
@@ -197,7 +185,7 @@ export function FileSelectModal() {
                 </div>
                 <div className="relative h-72 overflow-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-default/40">
                   {isLoading ? (
-                    <TadpoleIcon className="absolute left-1/2 top-1/2 size-10 -translate-x-1/2 -translate-y-1/2" />
+                    <Icons.Loading className="absolute left-1/2 top-1/2 size-10 -translate-x-1/2 -translate-y-1/2" />
                   ) : (
                     <DebridTorrentTree rootNode={rootNode} status={item.status} />
                   )}
@@ -269,7 +257,7 @@ const TorrentListItem = memo(({ item }: TorrentListItemProps) => {
               base: "m-0",
               wrapper: "before:rounded-full after:rounded-full mr-0",
             }}
-            icon={<EpSuccessFilled />}
+            icon={<Icons.Check />}
           />
         )}
         <p title={item.filename} className="text-bold text-md truncate capitalize">
@@ -278,12 +266,12 @@ const TorrentListItem = memo(({ item }: TorrentListItemProps) => {
       </div>
 
       <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
-        {item.status === "downloading" && <LineMdDownloadingLoop className="size-6" />}
+        {item.status === "downloading" && <Icons.AnimatedDownload />}
 
-        {item.status === "uploading" && <LineMdUploadingLoop className="size-6" />}
-        {item.status === "downloaded" && <EpSuccessFilled className="size-6 text-success" />}
-        {item.status === "error" && <MdiError className="size-6 text-danger" />}
-        {item.status === "waiting_files_selection" && <SelectIcon className="size-6 " />}
+        {item.status === "uploading" && <Icons.AnimatedUpload />}
+        {item.status === "downloaded" && <Icons.Check className="text-success" />}
+        {item.status === "error" && <Icons.Exclamation className="text-danger" />}
+        {item.status === "waiting_files_selection" && <Icons.SelectWait />}
         <p className="text-bold text-sm truncate capitalize">
           {item.progress}
           {"%"}
@@ -300,7 +288,7 @@ const TorrentListItem = memo(({ item }: TorrentListItemProps) => {
           onPress={onModalOpen}
           className="data-[hover=true]:bg-transparent"
         >
-          <EyeIcon />
+          <Icons.Eye />
         </Button>
 
         <Button
@@ -313,7 +301,7 @@ const TorrentListItem = memo(({ item }: TorrentListItemProps) => {
           title="Unrestict Links"
           className="data-[hover=true]:bg-transparent"
         >
-          <DownloadIcon />
+          <Icons.DownloadOutline />
         </Button>
 
         <CopyButton title="Copy Links" value={item.links.length > 0 ? item.links.join("\n") : ""} />
@@ -325,7 +313,7 @@ const TorrentListItem = memo(({ item }: TorrentListItemProps) => {
           onPress={() => mutation.mutate()}
           className="data-[hover=true]:bg-transparent"
         >
-          <DeleteIcon />
+          <Icons.Delete />
         </Button>
       </div>
     </div>
@@ -368,7 +356,7 @@ export const DownloadListItem = memo(({ item }: DownloadListItemProps) => {
               base: "m-0",
               wrapper: "before:rounded-full after:rounded-full mr-0",
             }}
-            icon={<EpSuccessFilled />}
+            icon={<Icons.Check />}
           />
         ) : (
           <div className="size-10 p-2">
@@ -391,12 +379,12 @@ export const DownloadListItem = memo(({ item }: DownloadListItemProps) => {
           href={item.link}
           className="data-[hover=true]:bg-transparent"
         >
-          <OpenLinkIcon />
+          <Icons.ExternalLink />
         </Button>
 
         <Button
           variant="light"
-          title={"Play Video"}
+          title={"Play"}
           as={ForwardLink}
           isIconOnly
           to="/watch/$"
@@ -405,29 +393,29 @@ export const DownloadListItem = memo(({ item }: DownloadListItemProps) => {
           }}
           className="data-[hover=true]:bg-transparent"
         >
-          <PlayIcon />
+          <Icons.Play />
         </Button>
 
         <Button
           variant="light"
           as={"a"}
-          title={"Download Video"}
+          title={"Download"}
           isIconOnly
           rel="noopener noreferrer"
           href={item.download}
           className="data-[hover=true]:bg-transparent"
         >
-          <DownloadIcon />
+          <Icons.DownloadOutline />
         </Button>
 
         <Button
           variant="light"
-          title={"Delete Link"}
+          title={"Delete"}
           isIconOnly
           onClick={() => mutation.mutate()}
           className="data-[hover=true]:bg-transparent"
         >
-          <DeleteIcon />
+          <Icons.Delete />
         </Button>
       </div>
     </div>
@@ -488,7 +476,7 @@ export default function DebridList() {
 
   const topContent = React.useMemo(() => {
     return (
-      <div className="flex flex-wrap items-center gap-3 pt-3">
+      <div className="flex flex-wrap items-center gap-3">
         <Pagination
           isCompact
           showControls
@@ -505,13 +493,13 @@ export default function DebridList() {
         />
 
         <Button
-          title="Toggle Select Mode"
+          title="Select Mode"
           variant="flat"
           className="bg-white/5"
           isIconOnly
           onPress={() => actions.toggleSelectMode()}
         >
-          <SelectMode />
+          <Icons.SelectMode />
         </Button>
         <Button
           title="Select All"
@@ -521,26 +509,26 @@ export default function DebridList() {
           isDisabled={!selectMode}
           onPress={selectAll}
         >
-          <SelectAllIcon />
+          <Icons.SelectAll />
         </Button>
         <Button
           isLoading={deleteMutation.isPending}
-          title="Delete Selected"
+          title="Delete"
           variant="flat"
           className="bg-white/5"
           isIconOnly
           onPress={onBulkDelete}
         >
-          <DeleteIcon />
+          <Icons.Delete />
         </Button>
       </div>
     );
   }, [params.page, totalPages, params.type, deleteMutation.isPending, selectMode]);
 
   return (
-    <div className="size-full">
+    <div className="size-full grid gap-1">
       {topContent}
-      <div className="flex flex-col gap-4 px-2 py-3">
+      <div className="flex flex-col gap-4 px-2 py-3 overflow-y-auto size-full [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-default/40">
         {params.type === "torrents"
           ? items.map((item) => <TorrentListItem key={item.id} item={item as DebridTorrent} />)
           : items.map((item) => <DownloadListItem key={item.id} item={item as DebridUnlock} />)}

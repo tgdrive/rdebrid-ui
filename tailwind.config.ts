@@ -45,13 +45,13 @@ export default {
       addCommonColors: true,
       defaultTheme: "dark",
       defaultExtendTheme: "dark",
-      themes: {
-        dark: {
-          colors: {
-            background: "#111927c2",
-          },
-        },
-      },
+      // themes: {
+      //   dark: {
+      //     colors: {
+      //       background: "#111927c2",
+      //     },
+      //   },
+      // },
     }),
   ],
 } satisfies Config;

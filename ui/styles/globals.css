@@ -16,8 +16,20 @@
 @tailwind utilities;
 
 .bg-gradient {
-  background-image: radial-gradient(at 47% 33%, hsla(145, 19%, 36%, 0.12) 0, transparent 59%),
-    radial-gradient(at 82% 65%, hsl(218.0, 39%, 11%) 0, transparent 55%);
+  background-color: hsl(var(--nextui-background));
+  background-image: radial-gradient(
+    at 50% -10%,
+    hsl(183.32deg 43.65% 44.06% / 34%) 5%,
+    hsl(0deg 0% 0% / 45%) 90%
+  );
+}
+.bg-dialog {
+  background-color: hsl(var(--nextui-background));
+  background-image: radial-gradient(
+    at 90% 0%,
+    hsl(183.32deg 43.65% 44.06% / 24%) 5%,
+    hsl(0deg 0% 0% / 0%) 90%
+  );
 }
 .art-video-player {
   --art-control-height: 60px;

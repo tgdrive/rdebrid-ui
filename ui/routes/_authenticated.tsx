@@ -56,7 +56,6 @@ function AuthenticatedLayout() {
         <main
           className={clsx(
             "absolute left-0 right-0 md:bottom-0 md:left-20 bottom-20 top-20 max-w-screen-xl  mx-auto",
-            "overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-default/40",
           )}
           data-scroll-restoration-id="scroll"
         >

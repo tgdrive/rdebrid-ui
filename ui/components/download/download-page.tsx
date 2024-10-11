@@ -1,17 +1,15 @@
 import type { DownloadTab } from "@/types";
 import { Tab, Tabs } from "@nextui-org/react";
 import { getRouteApi, Outlet } from "@tanstack/react-router";
-import TorrentIcon from "~icons/simple-icons/bittorrent";
-import MagnetIcon from "~icons/ph/magnet-straight";
 import DownloadIcon from "~icons/mingcute/file-download-fill";
 import clsx from "clsx";
 import { useDebridStore } from "@/ui/utils/store";
 import { DownloadListItem } from "@/ui/components/debrid-list";
+import { Icons } from "@/ui/utils/icons";
 
 const titleMap = {
   links: "Unrestrict Links",
   torrents: "Add Torrents",
-  avaliability: "Check Avaliability",
 };
 
 const getIcon = (tab: DownloadTab) => {
@@ -19,9 +17,7 @@ const getIcon = (tab: DownloadTab) => {
     case "links":
       return <DownloadIcon />;
     case "torrents":
-      return <TorrentIcon />;
-    case "avaliability":
-      return <MagnetIcon />;
+      return <Icons.BitTorrent />;
   }
 };
 
@@ -36,7 +32,7 @@ export const DownloadPage = () => {
 
   return (
     <div className="p-4 flex flex-col gap-4">
-      <div className="w-full flex flex-col gap-3 max-w-2xl mx-auto p-3 rounded-lg border-2 border-white/20 bg-background/50">
+      <div className="w-full flex flex-col gap-3 max-w-2xl mx-auto p-3 rounded-lg ring-2 ring-white/10 bg-dialog">
         <p className="text-xl capitalize">{titleMap[tabId]}</p>
         <div className="space-y-4">
           <Tabs

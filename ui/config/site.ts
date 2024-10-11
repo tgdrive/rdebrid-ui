@@ -1,9 +1,4 @@
-import HomeOutline from "~icons/ion/home-outline";
-import HomeFilled from "~icons/ion/home";
-import DownloadOutline from "~icons/mingcute/download-3-line";
-import DownloadFilled from "~icons/mingcute/download-3-fill";
-import TorrentFilled from "~icons/simple-icons/bittorrent";
-import TorrentOutline from "~icons/arcticons/bittorrent";
+import { Icons } from "@/ui/utils/icons";
 
 export const siteConfig = {
   name: "Debrid",
@@ -14,8 +9,8 @@ export const siteConfig = {
       label: "Home",
       path: "/downloader/links",
       search: {},
-      icon: HomeOutline,
-      activeIcon: HomeFilled,
+      icon: Icons.HomeOutline,
+      activeIcon: Icons.HomeFilled,
     },
     {
       id: "torrents",
@@ -25,19 +20,19 @@ export const siteConfig = {
         type: "torrents",
         page: 1,
       },
-      icon: TorrentOutline,
-      activeIcon: TorrentFilled,
+      icon: Icons.TorrentOutline,
+      activeIcon: Icons.TorrentFilled,
     },
     {
       id: "downloads",
-      label: "DLoads",
+      label: "Dloads",
       path: "/view",
       search: {
         type: "downloads",
         page: 1,
       },
-      icon: DownloadOutline,
-      activeIcon: DownloadFilled,
+      icon: Icons.DownloadOutline,
+      activeIcon: Icons.DownloadFilled,
     },
   ],
 } as const;
