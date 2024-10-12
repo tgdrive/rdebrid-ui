@@ -2,6 +2,8 @@
 
  Real-Debrid Modern UI! This project provides a modern interface for Real-Debrid with new features such as bulk delete,availability checking and many more.
 
+ [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/YOURUSERNAME/YOURREPO)
+
 ## Features
 
 - **Modern Interface**: A clean and modern interface for Real-Debrid.
@@ -27,6 +29,8 @@ Ensure you have the following installed on your system:
 
 ## Getting Started
 
+### Deploy With Docker
+
 Use docker-compose to run the application.Change the environment variables in the docker-compose file.
 
 ```yml
@@ -44,6 +48,15 @@ services:
     restart: always
     
 ```
+
+### Deploy With Cloudflare Pages
+- Fork this repository.
+- Create a new Cloudflare Pages project and connect it to your forked repository.
+- Add `pnpm build:client` as the build command.
+- Add `build/client` in Build output.
+- Add Environment Variables in the Cloudflare Pages settings.
+- Deploy the project.
+
 **Note**: `AUTH_REAL_DEBRID_ID` and `AUTH_REAL_DEBRID_SECRET` are required for Real-Debrid authentication. It will be generated through UI when you login first time make sure you copy those and use it here.Its a one time process.
 ## Environment Variables
 
