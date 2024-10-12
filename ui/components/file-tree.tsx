@@ -1,14 +1,12 @@
 import type React from "react";
 import { useState, useCallback } from "react";
-import ChevronRightIcon from "~icons/heroicons/chevron-right-solid";
-import FolderIcon from "~icons/heroicons/folder-solid";
 
 import { motion } from "framer-motion";
 import { Button, Checkbox } from "@nextui-org/react";
 import type { DebridTorrent, FileNode } from "@/types";
 import { useSelectModalStore } from "@/ui/utils/store";
-import DownloadIcon from "~icons/heroicons/arrow-down-20-solid";
 import { ForwardLink } from "./forward-link";
+import { Icons } from "@/ui/utils/icons";
 
 interface DebridTorrentItemProps {
   node: FileNode;
@@ -59,11 +57,11 @@ export function DebridTorrentItem({
               transition={{ type: "spring", bounce: 0, duration: 0.4 }}
               className="flex"
             >
-              <ChevronRightIcon className="size-4 text-gray-500" />
+              <Icons.ChevronRight className="size-4 text-gray-500" />
             </motion.span>
           </Button>
         )}
-        {node.nodes && <FolderIcon className="size-6 text-primary-500" />}
+        {node.nodes && <Icons.Folder className="text-primary-500" />}
         {(!node.nodes || node.nodes.length === 0) && isSelected && (
           <Button
             title="Unrestrict Link"
@@ -77,7 +75,7 @@ export function DebridTorrentItem({
             isIconOnly
             className="data-[hover=true]:bg-transparent w-6 h-6 min-w-6"
           >
-            <DownloadIcon />
+            <Icons.DownloadDashed />
           </Button>
         )}
         {node.name}

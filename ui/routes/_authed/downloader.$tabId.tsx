@@ -4,16 +4,20 @@ import { UnRestrictLink } from "@/ui/components/download/unrestrict-link";
 import type { DownloadTab } from "@/types";
 import { memo } from "react";
 import { debridTorrentQueryOptions } from "@/ui/utils/queryOptions";
-import { capitalize } from "@/ui/utils/common";
 
-export const Route = createFileRoute("/_authenticated/downloader/$tabId")({
+const titleMap = {
+  links: "Unrestrict Links",
+  torrents: "Add Torrents",
+};
+
+export const Route = createFileRoute("/_authed/downloader/$tabId")({
   component: memo(Component),
   validateSearch: (search: Record<string, unknown>) =>
     search as { fileId?: string; restrictedId?: string },
   loaderDeps: ({ search }) => ({ search }),
   meta: ({ params }) => [
     {
-      title: capitalize(params.tabId),
+      title: titleMap[params.tabId as DownloadTab],
     },
   ],
   loader: ({ context: { queryClient }, deps: { search }, params }) => {

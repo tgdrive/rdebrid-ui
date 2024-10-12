@@ -13,6 +13,7 @@ import { FileSelectModal } from "@/ui/components/debrid-list";
 import clsx from "clsx";
 import { SideNav } from "@/ui/components/side-nav";
 import { type ReactNode, useEffect } from "react";
+import { scrollClasses } from "@/ui/utils/classes";
 
 const checkAuth = async (queryClient: QueryClient, location: ParsedLocation, preload: boolean) => {
   if (preload) {
@@ -41,7 +42,7 @@ function Meta({ children }: { children: ReactNode }) {
   return children;
 }
 
-export const Route = createFileRoute("/_authenticated")({
+export const Route = createFileRoute("/_authed")({
   component: AuthenticatedLayout,
   beforeLoad: ({ location, context: { queryClient }, preload }) =>
     checkAuth(queryClient, location, preload),
@@ -55,9 +56,9 @@ function AuthenticatedLayout() {
         <SideNav />
         <main
           className={clsx(
-            "absolute left-0 right-0 md:bottom-0 md:left-20 bottom-20 top-20 max-w-screen-xl  mx-auto",
+            "absolute left-0 right-0 md:bottom-0 md:left-20 bottom-20 top-20 max-w-screen-xl mx-auto overflow-y-auto",
+            scrollClasses,
           )}
-          data-scroll-restoration-id="scroll"
         >
           <Meta>
             <Outlet />

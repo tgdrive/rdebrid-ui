@@ -8,7 +8,7 @@ import { createRouter, RouterProvider } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
 import { Toaster } from "react-hot-toast";
 
-import { routeTree } from "./routeTree.gen";
+import { routeTree } from "./route-tree.gen";
 
 import "./styles/globals.css";
 
@@ -39,7 +39,7 @@ if (!rootElement.innerHTML) {
         <RouterProvider router={router} />
         <TailwindIndicator />
       </NextUIProvider>
-      {/* <ReactQueryDevtools buttonPosition="bottom-right" /> */}
+      <ReactQueryDevtools buttonPosition="bottom-right" />
     </QueryClientProvider>,
   );
 }

@@ -1,8 +1,6 @@
 import type React from "react";
 import { useEffect, useRef } from "react";
 
-// import SolarPlayCircleBold from "~icons/solar/play-circle-bold";
-// import FlatColorIconsVlc from "~icons/flat-color-icons/vlc";
 import type { Artplayer, Option, AspectRatio } from "@artplayer/player";
 import Player from "./artplayer";
 

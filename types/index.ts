@@ -43,7 +43,7 @@ export interface DebridTorrent {
   seeders?: number;
 }
 
-export interface DebridUnlock {
+export type DebridUnlock = {
   id: string;
   filename: string;
   filesize: number;
@@ -56,7 +56,8 @@ export interface DebridUnlock {
   streamable: number;
   type: string;
   mimeType: string;
-}
+  error?: string;
+};
 
 export type TorrentAvaliabilityResponse = {
   [key: string]: {

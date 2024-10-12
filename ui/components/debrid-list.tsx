@@ -26,6 +26,8 @@ import { DebridTorrentTree } from "./file-tree";
 import { useDebridStore, useSelectModalStore } from "@/ui/utils/store";
 import { CopyButton } from "./copy-button";
 import { Icons } from "@/ui/utils/icons";
+import clsx from "clsx";
+import { scrollClasses } from "@/ui/utils/classes";
 
 const paginationItemClass = "bg-white/5 [&[data-hover=true]:not([data-active=true])]:bg-white/10";
 
@@ -136,11 +138,10 @@ export function FileSelectModal() {
       <Modal
         backdrop="transparent"
         isOpen={isOpen}
-        disableAnimation
         onOpenChange={onOpenChange}
         classNames={{
-          base: "max-w-[50rem] bg-dialog",
-          closeButton: "hover:bg-white/5",
+          base: "max-w-[50rem] !bg-radial-1 bg-background",
+          closeButton: "hover:bg-white/5 active:bg-white/5",
         }}
       >
         <ModalContent>
@@ -301,7 +302,7 @@ const TorrentListItem = memo(({ item }: TorrentListItemProps) => {
           title="Unrestict Links"
           className="data-[hover=true]:bg-transparent"
         >
-          <Icons.DownloadOutline />
+          <Icons.DownloadDashed />
         </Button>
 
         <CopyButton title="Copy Links" value={item.links.length > 0 ? item.links.join("\n") : ""} />
@@ -405,7 +406,7 @@ export const DownloadListItem = memo(({ item }: DownloadListItemProps) => {
           href={item.download}
           className="data-[hover=true]:bg-transparent"
         >
-          <Icons.DownloadOutline />
+          <Icons.DownloadDashed />
         </Button>
 
         <Button
@@ -423,7 +424,7 @@ export const DownloadListItem = memo(({ item }: DownloadListItemProps) => {
 });
 
 export default function DebridList() {
-  const params = useSearch({ from: "/_authenticated/view" });
+  const params = useSearch({ from: "/_authed/view" });
 
   const {
     data: { items, totalPages },
@@ -528,7 +529,9 @@ export default function DebridList() {
   return (
     <div className="size-full grid gap-1">
       {topContent}
-      <div className="flex flex-col gap-4 px-2 py-3 overflow-y-auto size-full [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-default/40">
+      <div
+        className={clsx("flex flex-col gap-4 px-2 py-3 overflow-y-auto size-full", scrollClasses)}
+      >
         {params.type === "torrents"
           ? items.map((item) => <TorrentListItem key={item.id} item={item as DebridTorrent} />)
           : items.map((item) => <DownloadListItem key={item.id} item={item as DebridUnlock} />)}

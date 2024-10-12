@@ -6,7 +6,7 @@ export const Route = createRootRouteWithContext<{
 }>()({
   component: () => (
     <>
-      <div className="fixed inset-0 bg-gradient" />
+      <div className="fixed inset-0 bg-radial" />
       <ScrollRestoration />
       <Outlet />
     </>

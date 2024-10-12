@@ -20,12 +20,22 @@ import GrommetIconsSelect from "~icons/grommet-icons/select";
 import TablerEye from "~icons/tabler/eye";
 import TadpoleIcon from "~icons/svg-spinners/tadpole";
 import SimpleIconsBittorrent from "~icons/simple-icons/bittorrent";
+import TablerArrowDownDashed from "~icons/tabler/arrow-down-dashed";
+import FolderIcon from "~icons/heroicons/folder-solid";
+import TablerChevronRight from "~icons/tabler/chevron-right";
+import TablerSquareRoundedArrowDownFilled from "~icons/tabler/square-rounded-arrow-down-filled";
+import TablerSquareRoundedArrowDown from "~icons/tabler/square-rounded-arrow-down";
+import TablerLink from "~icons/tabler/link";
+import TablerUpload from "~icons/tabler/upload";
+import FlatColorIconsVlc from "~icons/flat-color-icons/vlc";
 
 export const Icons = {
   HomeOutline: TablerHome,
   HomeFilled: TablerHomeFilled,
-  DownloadOutline: TablerCircleArrowDown,
-  DownloadFilled: TablerCircleArrowDownFilled,
+  DownloadOutlineCircle: TablerCircleArrowDown,
+  DownloadFilledCircle: TablerCircleArrowDownFilled,
+  Download: TablerSquareRoundedArrowDown,
+  DownloadFilled: TablerSquareRoundedArrowDownFilled,
   TorrentFilled: TablerMagnetFilled,
   TorrentOutline: TablerMagnet,
   Delete: TablerTrash,
@@ -36,9 +46,9 @@ export const Icons = {
   SelectAll: TablerSelectAll,
   DeSelect: TablerDeselect,
   SelectMode: TablerSelect,
-  ChevronRight: TablerCircleChevronRight,
+  ChevronRightCircle: TablerCircleChevronRight,
+  ChevronRight: TablerChevronRight,
   Check: TablerCircleCheckFilled,
-  Error: TablerCircleCheckFilled,
   Exclamation: TablerExclamationCircleFilled,
   AnimatedUpload: LineMdDownloadingLoop,
   AnimatedDownload: LineMdDownloadingLoop,
@@ -46,4 +56,9 @@ export const Icons = {
   Eye: TablerEye,
   Loading: TadpoleIcon,
   BitTorrent: SimpleIconsBittorrent,
+  DownloadDashed: TablerArrowDownDashed,
+  Folder: FolderIcon,
+  Link: TablerLink,
+  Upload: TablerUpload,
+  Vlc: FlatColorIconsVlc,
 };

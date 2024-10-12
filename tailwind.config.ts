@@ -30,6 +30,12 @@ export default {
       screens: {
         xs: "475px",
       },
+      backgroundImage: {
+        radial:
+          "radial-gradient(at 50% -10%, hsl(183.32deg 43.65% 44.06% / 34%) 5%, hsl(0deg 0% 0% / 45%) 90%)",
+        "radial-1":
+          "radial-gradient(at 90% 0%,hsl(183.32deg 43.65% 44.06% / 24%) 5%,hsl(0deg 0% 0% / 0%) 90%)",
+      },
     },
     container: {
       center: true,
@@ -45,13 +51,13 @@ export default {
       addCommonColors: true,
       defaultTheme: "dark",
       defaultExtendTheme: "dark",
-      // themes: {
-      //   dark: {
-      //     colors: {
-      //       background: "#111927c2",
-      //     },
-      //   },
-      // },
+      themes: {
+        dark: {
+          colors: {
+            primary: "#31797da3",
+          },
+        },
+      },
     }),
   ],
 } satisfies Config;

@@ -31,7 +31,7 @@ export const siteConfig = {
         type: "downloads",
         page: 1,
       },
-      icon: Icons.DownloadOutline,
+      icon: Icons.Download,
       activeIcon: Icons.DownloadFilled,
     },
   ],

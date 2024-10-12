@@ -11,14 +11,13 @@ const Profile = ({ session: { user } }: { session: Session }) => {
     <Dropdown
       placement="bottom-end"
       classNames={{
-        content: "bg-dialog",
+        content: "!bg-radial-1 bg-background",
       }}
     >
       <DropdownTrigger>
         <Avatar
           isBordered
           as="button"
-          className="transition-transform ring-white/10"
           name={user?.name ?? "Anonymous"}
           color="primary"
           size="sm"
