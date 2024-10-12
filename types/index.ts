@@ -3,7 +3,24 @@ import type { Dispatch, SetStateAction } from "react";
 export type HonoBinding = {
   Bindings: {
     DEBRID_TOKEN: string;
+    FORWARD_IP: string;
   };
+};
+
+export type OauthData = {
+  device_code: string;
+  user_code: string;
+  interval: number;
+  expires_in: number;
+  verification_url: string;
+  direct_verification_url: string;
+};
+
+export type DebridCredentials = {
+  client_id: string;
+  client_secret: string;
+  error?: string;
+  error_code?: number;
 };
 
 export type DebridTorrentFile = {

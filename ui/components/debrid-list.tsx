@@ -28,6 +28,7 @@ import { CopyButton } from "./copy-button";
 import { Icons } from "@/ui/utils/icons";
 import clsx from "clsx";
 import { scrollClasses } from "@/ui/utils/classes";
+import { getQueryClient } from "../utils/queryClient";
 
 const paginationItemClass = "bg-white/5 [&[data-hover=true]:not([data-active=true])]:bg-white/10";
 
@@ -202,7 +203,12 @@ export function FileSelectModal() {
                         fileId: item.id,
                         ids: getSelectedIds(rootNode, selectedPaths),
                       })
-                      .then(onClose);
+                      .then(() => {
+                        getQueryClient().invalidateQueries({
+                          queryKey: ["debrid"],
+                        });
+                        onClose();
+                      });
                   }}
                 >
                   Add
@@ -477,7 +483,7 @@ export default function DebridList() {
 
   const topContent = React.useMemo(() => {
     return (
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap gap-3">
         <Pagination
           isCompact
           showControls
@@ -527,10 +533,10 @@ export default function DebridList() {
   }, [params.page, totalPages, params.type, deleteMutation.isPending, selectMode]);
 
   return (
-    <div className="size-full grid gap-1">
+    <div className="size-full grid gap-1 grid-rows-[56px_1fr]">
       {topContent}
       <div
-        className={clsx("flex flex-col gap-4 px-2 py-3 overflow-y-auto size-full", scrollClasses)}
+        className={clsx("flex flex-col gap-4 px-2 pb-2 overflow-y-auto size-full", scrollClasses)}
       >
         {params.type === "torrents"
           ? items.map((item) => <TorrentListItem key={item.id} item={item as DebridTorrent} />)

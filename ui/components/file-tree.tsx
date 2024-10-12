@@ -62,7 +62,7 @@ export function DebridTorrentItem({
           </Button>
         )}
         {node.nodes && <Icons.Folder className="text-primary-500" />}
-        {(!node.nodes || node.nodes.length === 0) && isSelected && (
+        {(!node.nodes || node.nodes.length === 0) && isSelected && status === "downloaded" && (
           <Button
             title="Unrestrict Link"
             as={ForwardLink}

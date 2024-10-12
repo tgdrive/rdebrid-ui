@@ -40,7 +40,7 @@ const AuthedIndexRoute = AuthedIndexImport.update({
 const WatchSplatRoute = WatchSplatImport.update({
   path: "/watch/$",
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import("./routes/watch.$.lazy").then((d) => d.Route))
 
 const AuthedViewRoute = AuthedViewImport.update({
   path: "/view",

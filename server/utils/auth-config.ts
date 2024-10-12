@@ -4,10 +4,7 @@ import RealDebrid from "./debrid-auth";
 
 export function getAuthConfig(c: Context): AuthConfig {
   return {
-    providers: [RealDebrid({})],
-    pages: {
-      signIn: "/login",
-    },
+    providers: [RealDebrid],
     cookies: {
       sessionToken: {
         name: "debrid.session-token",

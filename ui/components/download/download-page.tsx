@@ -157,7 +157,10 @@ export const DownloadPage = () => {
             <CopyButton value={copyContent} title="Copy Links" />
           </div>
 
-          <div className={clsx("flex flex-col gap-4 px-2 py-3 overflow-y-auto", scrollClasses)}>
+          <div
+            data-scroll-restoration-id="scroll"
+            className={clsx("flex flex-col gap-4 px-2 py-3 overflow-y-auto", scrollClasses)}
+          >
             {files.map((item) => (
               <UnlockListItem key={item.id} item={item} />
             ))}

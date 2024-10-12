@@ -31,17 +31,6 @@ const checkAuth = async (queryClient: QueryClient, location: ParsedLocation, pre
   }
 };
 
-function Meta({ children }: { children: ReactNode }) {
-  const matches = useMatches();
-  const meta = matches.at(-1)?.meta?.find((meta) => meta.title);
-
-  useEffect(() => {
-    document.title = meta?.title || "Real Debrid";
-  }, [meta]);
-
-  return children;
-}
-
 export const Route = createFileRoute("/_authed")({
   component: AuthenticatedLayout,
   beforeLoad: ({ location, context: { queryClient }, preload }) =>
@@ -60,9 +49,7 @@ function AuthenticatedLayout() {
             scrollClasses,
           )}
         >
-          <Meta>
-            <Outlet />
-          </Meta>
+          <Outlet />
         </main>
         {open && <FileSelectModal />}
       </div>

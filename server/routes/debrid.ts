@@ -6,24 +6,39 @@ const router = new Hono<HonoBinding>({ strict: false });
 
 const methods = ["PUT", "POST", "PATCH"];
 
-router.use("*", verifyAuth());
-
-router.use("*", async (c) => {
-  const user = c.get("authUser").token;
+router.get("/oauth/*", async (c) => {
   const url = new URL(c.req.url);
+  url.host = "api.real-debrid.com";
+  url.protocol = "https:";
+  url.port = "";
+  url.pathname = url.pathname.replace("/api/debrid", "");
+
+  const res = await fetch(url.toString(), {
+    method: c.req.method,
+  });
+  const resHeaders = new Headers(res.headers);
+  resHeaders.delete("Content-Encoding");
+  return new Response(res.body, {
+    status: res.status,
+    headers: resHeaders,
+  });
+});
+
+router.use("*", verifyAuth(), async (c) => {
+  const url = new URL(c.req.url);
+  const user = c.get("authUser")?.token;
   url.host = "api.real-debrid.com";
   url.protocol = "https:";
   url.port = "";
   url.pathname = `/rest/1.0${url.pathname.replace("/api/debrid", "")}`;
   const headers = new Headers();
   headers.set("Authorization", `Bearer ${c.env.DEBRID_TOKEN || user?.access_token}`);
-
   if (
     methods.find((method) => method === c.req.method) &&
     c.req.header("content-type") !== "application/octet-stream"
   ) {
     const body = await c.req.parseBody();
-    const ip = c.req.header("CF-Connecting-IP") as string;
+    const ip = c.env.FORWARD_IP || c.req.header("CF-Connecting-IP");
     if (ip) {
       body.ip = ip;
     }

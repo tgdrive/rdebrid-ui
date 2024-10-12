@@ -49,7 +49,7 @@ export const Navbar = () => {
   const { data: session } = useSuspenseQuery(sessionQueryOptions);
 
   return (
-    <header className="h-12 flex w-full justify-between items-center px-6 pt-3">
+    <header className="h-12 flex w-full justify-between items-center px-6 pt-3 z-50">
       <Link
         className="flex max-w-20 cursor-pointer gap-2"
         to="/downloader/$tabId"
