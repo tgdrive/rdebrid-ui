@@ -2,8 +2,6 @@
 
  Real-Debrid Modern UI! This project provides a modern interface for Real-Debrid with new features such as bulk delete,availability checking and many more.
 
- [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/YOURUSERNAME/YOURREPO)
-
 ## Features
 
 - **Modern Interface**: A clean and modern interface for Real-Debrid.
