@@ -1,5 +1,5 @@
 import { Button, Input } from "@nextui-org/react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { useCallback, useRef, useState } from "react";
 import { magnetRegex } from "@/ui/utils/common";
 import http from "@/ui/utils/http";
@@ -19,7 +19,7 @@ const initialformState = {
 };
 
 export const AddTorrent = () => {
-  const { control, handleSubmit, setValue, getValues, setError } = useForm({
+  const { control, handleSubmit, setValue, setError } = useForm({
     defaultValues: initialformState,
   });
 
@@ -31,8 +31,13 @@ export const AddTorrent = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const magnet = useWatch({
+    control,
+    name: "magnet",
+  });
+
   const { data, isFetched, isLoading, isRefetching, refetch } = useQuery(
-    debridAvailabilityOptions(getValues("magnet")),
+    debridAvailabilityOptions(magnet),
   );
 
   const onSubmit = useCallback(async (data: typeof initialformState) => {
@@ -93,6 +98,7 @@ export const AddTorrent = () => {
             <Input
               aria-label="Upload Torrent"
               variant="bordered"
+              isReadOnly
               labelPlacement="outside"
               autoComplete="off"
               {...field}
@@ -122,6 +128,8 @@ export const AddTorrent = () => {
               aria-label="Add link or magnet"
               {...field}
               isInvalid={!!error}
+              isClearable
+              onClear={() => setValue("magnet", "")}
               errorMessage={error?.message}
               autoComplete="off"
               variant="bordered"

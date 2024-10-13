@@ -1,10 +1,9 @@
 @font-face {
-  font-family: "Rubik Variable";
+  font-family: "Rubik";
   font-style: normal;
   font-display: swap;
-  font-weight: 300 900;
-  src: url(https://cdn.jsdelivr.net/fontsource/fonts/rubik:vf@latest/latin-wght-normal.woff2)
-    format("woff2-variations");
+  font-weight: 100 900;
+  src: url("/fonts/rubik.woff2") format("woff2-variations");
 }
 
 @tailwind base;

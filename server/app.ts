@@ -9,8 +9,9 @@ const app = new Hono({ strict: false }).basePath("/");
 app.use(
   "/api/*",
   cors({
-    origin: (origin) => origin,
-    allowHeaders: ["Content-Type", "x-auth-return-redirect", "Authorization"],
+    origin: "*",
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowHeaders: ["*"],
     maxAge: 86400,
   }),
 );
