@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { Button, Checkbox } from "@nextui-org/react";
 import type { DebridTorrent, FileNode } from "@/types";
 import { useSelectModalStore } from "@/ui/utils/store";
-import { ForwardLink } from "./forward-link";
 import { Icons } from "@/ui/utils/icons";
 import { useQuery } from "@tanstack/react-query";
 import { debridUnrestrictLinkOptions } from "@/ui/utils/queryOptions";
@@ -73,7 +72,7 @@ export function DebridTorrentItem({
 
   return (
     <li key={node.name}>
-      <span className="flex items-center gap-1.5 py-1 text-sm">
+      <span className="flex items-center gap-1.5 py-1">
         <Checkbox
           className="m-0 p-0"
           isSelected={isSelected}
@@ -102,7 +101,9 @@ export function DebridTorrentItem({
         {(!node.nodes || node.nodes.length === 0) && isSelected && status === "downloaded" && (
           <UnRestrictButton link={node.link!} />
         )}
-        {node.name}
+        <p title={node.name} className="text-sm truncate">
+          {node.name}
+        </p>
       </span>
 
       {isOpen && node.nodes && (
