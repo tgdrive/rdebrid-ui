@@ -76,11 +76,10 @@ The application requires the following environment variables:
 
 **Note**: You must enter registered real debrid IP  in  `FORWARD_IP` if you are deploying app remotely.Registered IP can be found in Real-Debrid account settings.
 
-Sample `.env` file:
+## Contributing
 
-```bash
-AUTH_SECRET=secret
-AUTH_URL=http://localhost:8080/api/auth
-AUTH_REAL_DEBRID_ID=123456
-AUTH_REAL_DEBRID_SECRET=secret
-```
+Feel free to contribute to this project if you have any further ideas.
+
+## Donate
+
+If you like this project small contribution would be appreciated [Paypal](https://paypal.me/redux234).
