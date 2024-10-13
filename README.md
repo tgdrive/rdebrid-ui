@@ -55,7 +55,9 @@ services:
 - Add Environment Variables in the Cloudflare Pages settings.
 - Deploy the project.
 
-**Note**: `AUTH_REAL_DEBRID_ID` and `AUTH_REAL_DEBRID_SECRET` are required for Real-Debrid authentication. It will be generated through UI when you login first time make sure you copy those and use it here.Its a one time process.
+**Note*:*
+- `AUTH_REAL_DEBRID_ID` and `AUTH_REAL_DEBRID_SECRET` are required for Real-Debrid authentication. It will be generated through UI when you login first time make sure you copy those and use it here.Its a one time process.
+- For `AUTH_URL` make sure to add `/api/auth` at the end. For example app is deployed on `https://example.com` it will be `https://example.com/api/auth`
 ## Environment Variables
 
 The application requires the following environment variables:
@@ -78,7 +80,7 @@ Sample `.env` file:
 
 ```bash
 AUTH_SECRET=secret
-AUTH_URL=http://localhost:8080/api/auth #Make sure to add /api/auth at the end
+AUTH_URL=http://localhost:8080/api/auth
 AUTH_REAL_DEBRID_ID=123456
 AUTH_REAL_DEBRID_SECRET=secret
 ```
