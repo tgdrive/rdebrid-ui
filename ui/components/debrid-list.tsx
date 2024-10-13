@@ -483,7 +483,7 @@ export default function DebridList() {
 
   const topContent = React.useMemo(() => {
     return (
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-3 px-2">
         <Pagination
           isCompact
           showControls
@@ -533,7 +533,7 @@ export default function DebridList() {
   }, [params.page, totalPages, params.type, deleteMutation.isPending, selectMode]);
 
   return (
-    <div className="size-full grid gap-1 grid-rows-[56px_1fr]">
+    <div className="size-full grid gap-2 grid-rows-[auto_1fr]">
       {topContent}
       <div
         className={clsx("flex flex-col gap-4 px-2 pb-2 overflow-y-auto size-full", scrollClasses)}

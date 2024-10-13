@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 
 import { motion } from "framer-motion";
 import { Button, Checkbox } from "@nextui-org/react";
@@ -7,6 +7,8 @@ import type { DebridTorrent, FileNode } from "@/types";
 import { useSelectModalStore } from "@/ui/utils/store";
 import { ForwardLink } from "./forward-link";
 import { Icons } from "@/ui/utils/icons";
+import { useQuery } from "@tanstack/react-query";
+import { debridUnrestrictLinkOptions } from "@/ui/utils/queryOptions";
 
 interface DebridTorrentItemProps {
   node: FileNode;
@@ -15,6 +17,41 @@ interface DebridTorrentItemProps {
   selectedPaths: Set<string>;
   onSelectionChange: (path: string, isSelected: boolean) => void;
 }
+
+const UnRestrictButton = memo(({ link }: { link: string }) => {
+  const [enabled, setEnabled] = useState(false);
+
+  const { data, isLoading } = useQuery(debridUnrestrictLinkOptions(link, enabled));
+
+  return (
+    <>
+      {data?.link ? (
+        <Button
+          title="Download"
+          as={"a"}
+          rel="noopener noreferrer"
+          href={data.download}
+          variant="light"
+          isIconOnly
+          className="data-[hover=true]:bg-transparent w-6 h-6 min-w-6"
+        >
+          <Icons.DownloadDashed />
+        </Button>
+      ) : (
+        <Button
+          title="Unrestrict"
+          variant="light"
+          onPress={() => setEnabled(true)}
+          isLoading={isLoading}
+          isIconOnly
+          className="data-[hover=true]:bg-transparent w-6 h-6 min-w-6"
+        >
+          <Icons.DownloadDashed />
+        </Button>
+      )}
+    </>
+  );
+});
 
 export function DebridTorrentItem({
   node,
@@ -63,20 +100,7 @@ export function DebridTorrentItem({
         )}
         {node.nodes && <Icons.Folder className="text-primary-500" />}
         {(!node.nodes || node.nodes.length === 0) && isSelected && status === "downloaded" && (
-          <Button
-            title="Unrestrict Link"
-            as={ForwardLink}
-            to="/downloader/$tabId"
-            target="_blank"
-            rel="noopener noreferrer"
-            params={{ tabId: "links" }}
-            search={{ restrictedId: node.link?.split("/").pop() }}
-            variant="light"
-            isIconOnly
-            className="data-[hover=true]:bg-transparent w-6 h-6 min-w-6"
-          >
-            <Icons.DownloadDashed />
-          </Button>
+          <UnRestrictButton link={node.link!} />
         )}
         {node.name}
       </span>

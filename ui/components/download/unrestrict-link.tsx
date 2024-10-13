@@ -10,7 +10,6 @@ import type { DebridUnlock } from "@/types";
 import { buttonClasses } from "@/ui/utils/classes";
 import { isAxiosError } from "feaxios";
 import { defaultUnlockLinkAvatar } from "@/ui/utils/common";
-import { CopyButton } from "../copy-button";
 
 const initialformState = {
   links: "",

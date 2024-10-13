@@ -55,6 +55,15 @@ export const debridAvailabilityOptions = (magnet: string, enabled = false) =>
     enabled,
   });
 
+export const debridUnrestrictLinkOptions = (link: string, enabled = false) =>
+  queryOptions({
+    queryKey: ["debrid", "unrestrict", link],
+    queryFn: async ({ signal }) =>
+      (await http.postForm<DebridUnlock>("/unrestrict/link", { link }, { signal })).data,
+    enabled,
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+
 export const useDeleteDebrid = (
   view: "torrents" | "downloads",
   ids: string[],
