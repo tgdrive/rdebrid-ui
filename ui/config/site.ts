@@ -34,5 +34,12 @@ export const siteConfig = {
       icon: Icons.Download,
       activeIcon: Icons.DownloadFilled,
     },
+    {
+      id: "btsearch",
+      label: "Search",
+      path: "/btsearch",
+      icon: Icons.Search,
+      activeIcon: Icons.SearchFilled,
+    },
   ],
 } as const;

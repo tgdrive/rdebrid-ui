@@ -1,11 +1,13 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { env } from "hono/adapter";
+import { logger } from "hono/logger";
 
 import IndexRouter from "./routes";
 
 const app = new Hono({ strict: false }).basePath("/");
 
+app.use(logger());
 app.use(
   "/api/*",
   cors({

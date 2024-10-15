@@ -1,4 +1,5 @@
 import type {
+  BtSearchResponse,
   DebridTorrent,
   DebridUnlock,
   TorrentAvaliability,
@@ -6,18 +7,43 @@ import type {
 } from "@/types";
 import http from "@/ui/utils/http";
 import type { Session } from "@auth/core/types";
-import { keepPreviousData, queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { DebridParams } from "./schema";
+import {
+  infiniteQueryOptions,
+  keepPreviousData,
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import type { BtDigParams, DebridParams } from "./schema";
 import pLimit from "p-limit";
 
 export const sessionQueryOptions = queryOptions({
   queryKey: ["session"],
   queryFn: async () => {
-    const res = await http.get<Session>(`${window.location.origin}/api/auth/session`);
+    const res = await http.get<Session>("/auth/session");
     return res.data;
   },
   refetchInterval: 5 * 60 * 1000,
 });
+
+export const btSearchItemsQueryOptions = (params: BtDigParams) =>
+  infiniteQueryOptions({
+    queryKey: ["btdig", params],
+    queryFn: async ({ pageParam = 1, signal }) =>
+      (
+        await http.get<BtSearchResponse>("/btdig/search", {
+          params: {
+            ...params,
+            page: pageParam,
+          },
+          signal,
+        })
+      ).data,
+    enabled: !!params.q,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _) =>
+      lastPage.meta.page + 1 > lastPage.meta.pages ? undefined : lastPage.meta.page + 1,
+  });
 
 export const debridItemsQueryOptions = (params: DebridParams) =>
   queryOptions({
@@ -59,7 +85,7 @@ export const debridUnrestrictLinkOptions = (link: string, enabled = false) =>
   queryOptions({
     queryKey: ["debrid", "unrestrict", link],
     queryFn: async ({ signal }) =>
-      (await http.postForm<DebridUnlock>("/unrestrict/link", { link }, { signal })).data,
+      (await http.postForm<DebridUnlock>("/debrid/unrestrict/link", { link }, { signal })).data,
     enabled,
     staleTime: Number.POSITIVE_INFINITY,
   });
@@ -73,7 +99,7 @@ export const useDeleteDebrid = (
   const limit = pLimit(2);
   return useMutation({
     mutationFn: () => {
-      return Promise.all(ids.map((id) => limit(() => http.delete(`/${view}/delete/${id}`))));
+      return Promise.all(ids.map((id) => limit(() => http.delete(`/debrid/${view}/delete/${id}`))));
     },
     onSuccess: async () => {
       if (onSuccess) {
@@ -93,7 +119,7 @@ export const useCreateDebrid = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: { fileId: string; ids: number[] }) => {
-      return http.postForm(`/torrents/selectFiles/${payload.fileId}`, {
+      return http.postForm(`/debrid/torrents/selectFiles/${payload.fileId}`, {
         files: payload.ids.join(","),
       });
     },
@@ -110,7 +136,7 @@ type DebridReponse<T> = T extends "torrents"
     : never;
 
 const getDebridItems = async (params: DebridParams, signal: AbortSignal) => {
-  const res = await http.get(`/${params.type}`, {
+  const res = await http.get(`/debrid/${params.type}`, {
     signal,
     params: { page: params.page, limit: params.limit || 50 },
   });
@@ -119,7 +145,7 @@ const getDebridItems = async (params: DebridParams, signal: AbortSignal) => {
 };
 
 const getDebridTorrent = async (id: string, signal: AbortSignal) => {
-  const res = await http.get<DebridTorrent>(`/torrents/info/${id}`, {
+  const res = await http.get<DebridTorrent>(`/debrid/torrents/info/${id}`, {
     signal,
   });
   return res.data;
@@ -127,7 +153,7 @@ const getDebridTorrent = async (id: string, signal: AbortSignal) => {
 
 const unlockDebridTorrent = async (link: string, signal: AbortSignal) => {
   const res = await http.postForm<DebridUnlock>(
-    "/unrestrict/link",
+    "/debrid/unrestrict/link",
     { link },
     {
       signal,
@@ -141,7 +167,7 @@ const getTorrentAvaliability = async (magnet: string, signal: AbortSignal) => {
     magnet = decodeURIComponent(magnet).split("btih:")[1].split("&")[0];
   }
   const res = await http.get<TorrentAvaliabilityResponse>(
-    `/torrents/instantAvailability/${magnet}`,
+    `/debrid/torrents/instantAvailability/${magnet}`,
     {
       signal,
     },

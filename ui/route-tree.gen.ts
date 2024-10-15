@@ -17,6 +17,7 @@ import { Route as AuthedIndexImport } from "./routes/_authed/index"
 import { Route as WatchSplatImport } from "./routes/watch.$"
 import { Route as AuthedViewImport } from "./routes/_authed/view"
 import { Route as AuthedDownloaderImport } from "./routes/_authed/downloader"
+import { Route as AuthedBtsearchImport } from "./routes/_authed/btsearch"
 import { Route as AuthLoginImport } from "./routes/_auth.login"
 import { Route as AuthedDownloaderTabIdImport } from "./routes/_authed/downloader.$tabId"
 
@@ -49,6 +50,11 @@ const AuthedViewRoute = AuthedViewImport.update({
 
 const AuthedDownloaderRoute = AuthedDownloaderImport.update({
   path: "/downloader",
+  getParentRoute: () => AuthedRoute,
+} as any)
+
+const AuthedBtsearchRoute = AuthedBtsearchImport.update({
+  path: "/btsearch",
   getParentRoute: () => AuthedRoute,
 } as any)
 
@@ -86,6 +92,13 @@ declare module "@tanstack/react-router" {
       fullPath: "/login"
       preLoaderRoute: typeof AuthLoginImport
       parentRoute: typeof AuthImport
+    }
+    "/_authed/btsearch": {
+      id: "/_authed/btsearch"
+      path: "/btsearch"
+      fullPath: "/btsearch"
+      preLoaderRoute: typeof AuthedBtsearchImport
+      parentRoute: typeof AuthedImport
     }
     "/_authed/downloader": {
       id: "/_authed/downloader"
@@ -149,12 +162,14 @@ const AuthedDownloaderRouteWithChildren =
   AuthedDownloaderRoute._addFileChildren(AuthedDownloaderRouteChildren)
 
 interface AuthedRouteChildren {
+  AuthedBtsearchRoute: typeof AuthedBtsearchRoute
   AuthedDownloaderRoute: typeof AuthedDownloaderRouteWithChildren
   AuthedViewRoute: typeof AuthedViewRoute
   AuthedIndexRoute: typeof AuthedIndexRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedBtsearchRoute: AuthedBtsearchRoute,
   AuthedDownloaderRoute: AuthedDownloaderRouteWithChildren,
   AuthedViewRoute: AuthedViewRoute,
   AuthedIndexRoute: AuthedIndexRoute,
@@ -166,6 +181,7 @@ const AuthedRouteWithChildren =
 export interface FileRoutesByFullPath {
   "": typeof AuthedRouteWithChildren
   "/login": typeof AuthLoginRoute
+  "/btsearch": typeof AuthedBtsearchRoute
   "/downloader": typeof AuthedDownloaderRouteWithChildren
   "/view": typeof AuthedViewRoute
   "/watch/$": typeof WatchSplatRoute
@@ -176,6 +192,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   "": typeof AuthRouteWithChildren
   "/login": typeof AuthLoginRoute
+  "/btsearch": typeof AuthedBtsearchRoute
   "/downloader": typeof AuthedDownloaderRouteWithChildren
   "/view": typeof AuthedViewRoute
   "/watch/$": typeof WatchSplatRoute
@@ -188,6 +205,7 @@ export interface FileRoutesById {
   "/_auth": typeof AuthRouteWithChildren
   "/_authed": typeof AuthedRouteWithChildren
   "/_auth/login": typeof AuthLoginRoute
+  "/_authed/btsearch": typeof AuthedBtsearchRoute
   "/_authed/downloader": typeof AuthedDownloaderRouteWithChildren
   "/_authed/view": typeof AuthedViewRoute
   "/watch/$": typeof WatchSplatRoute
@@ -200,6 +218,7 @@ export interface FileRouteTypes {
   fullPaths:
     | ""
     | "/login"
+    | "/btsearch"
     | "/downloader"
     | "/view"
     | "/watch/$"
@@ -209,6 +228,7 @@ export interface FileRouteTypes {
   to:
     | ""
     | "/login"
+    | "/btsearch"
     | "/downloader"
     | "/view"
     | "/watch/$"
@@ -219,6 +239,7 @@ export interface FileRouteTypes {
     | "/_auth"
     | "/_authed"
     | "/_auth/login"
+    | "/_authed/btsearch"
     | "/_authed/downloader"
     | "/_authed/view"
     | "/watch/$"
@@ -265,6 +286,7 @@ export const routeTree = rootRoute
     "/_authed": {
       "filePath": "_authed.tsx",
       "children": [
+        "/_authed/btsearch",
         "/_authed/downloader",
         "/_authed/view",
         "/_authed/"
@@ -273,6 +295,10 @@ export const routeTree = rootRoute
     "/_auth/login": {
       "filePath": "_auth.login.tsx",
       "parent": "/_auth"
+    },
+    "/_authed/btsearch": {
+      "filePath": "_authed/btsearch.tsx",
+      "parent": "/_authed"
     },
     "/_authed/downloader": {
       "filePath": "_authed/downloader.tsx",

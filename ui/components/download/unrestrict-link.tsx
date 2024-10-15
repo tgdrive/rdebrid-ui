@@ -35,7 +35,7 @@ export const UnRestrictLink = () => {
     try {
       for (const link of links) {
         try {
-          const res = await http.postForm<DebridUnlock>("/unrestrict/link", {
+          const res = await http.postForm<DebridUnlock>("/debrid/unrestrict/link", {
             link: link.trim(),
             password: data.password.trim(),
           });

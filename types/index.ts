@@ -110,6 +110,21 @@ export interface FileNode {
   link?: string;
 }
 
+export type BtSearchResponse = {
+  torrents: Array<{
+    title: string;
+    magnet: string;
+    link: string;
+    createdAt: string;
+    size: string;
+  }>;
+  meta: {
+    total: number;
+    page: number;
+    pages: number;
+  };
+};
+
 export type DownloadTab = "links" | "torrents";
 
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;

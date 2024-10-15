@@ -28,6 +28,11 @@ import TablerSquareRoundedArrowDown from "~icons/tabler/square-rounded-arrow-dow
 import TablerLink from "~icons/tabler/link";
 import TablerUpload from "~icons/tabler/upload";
 import FlatColorIconsVlc from "~icons/flat-color-icons/vlc";
+import MingcuteSearchLine from "~icons/mingcute/search-line";
+import MingcuteSearchFill from "~icons/mingcute/search-fill";
+import TablerDotsVertical from "~icons/tabler/dots-vertical";
+import TablerCategory from "~icons/tabler/category";
+import IcRoundSort from "~icons/ic/round-sort";
 
 export const Icons = {
   HomeOutline: TablerHome,
@@ -61,4 +66,9 @@ export const Icons = {
   Link: TablerLink,
   Upload: TablerUpload,
   Vlc: FlatColorIconsVlc,
+  Search: MingcuteSearchLine,
+  SearchFilled: MingcuteSearchFill,
+  DotsVertical: TablerDotsVertical,
+  Catergory: TablerCategory,
+  Sort: IcRoundSort,
 };

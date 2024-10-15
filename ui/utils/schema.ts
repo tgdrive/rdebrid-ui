@@ -1,16 +1,35 @@
-import type { Optional } from "@/types";
-import { z } from "zod";
+import {
+  string,
+  optional,
+  object,
+  unknown,
+  pipe,
+  transform,
+  fallback,
+  picklist,
+  type InferInput,
+  number,
+} from "valibot";
 
-export const loginQuery = z.object({
-  redirect: z.string().optional(),
+export const loginQuery = object({
+  redirect: optional(string()),
 });
 
-export const debridParamsSchema = z.object({
-  page: z.coerce.number().int().positive().catch(1),
-  limit: z.coerce.number().int().positive().default(50).optional(),
-  type: z.enum(["torrents", "downloads"]).catch("torrents"),
+export const debridParamsSchema = object({
+  page: fallback(pipe(number(), transform(Number)), 1),
+  limit: optional(fallback(pipe(number(), transform(Number)), 50)),
+  type: fallback(picklist(["torrents", "downloads"]), "torrents"),
 });
 
-export type DebridParams = Optional<z.infer<typeof debridParamsSchema>, "limit" | "type">;
+export const btdigParamsSchema = object({
+  q: optional(string()),
+  orderBy: optional(fallback(picklist(["time", "size", "seeders", "relevance"]), "relevance")),
+  category: optional(fallback(picklist(["all", "movie", "audio", "doc", "app", "other"]), "all")),
+  page: optional(fallback(pipe(number(), transform(Number)), 1)),
+});
 
-export type LoginQuery = z.infer<typeof loginQuery>;
+export type DebridParams = InferInput<typeof debridParamsSchema>;
+
+export type LoginQuery = InferInput<typeof loginQuery>;
+
+export type BtDigParams = InferInput<typeof btdigParamsSchema>;

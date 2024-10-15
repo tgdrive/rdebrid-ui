@@ -46,14 +46,14 @@ export const AddTorrent = () => {
       setIsSubmitting(true);
       if (data.torrentBytes) {
         const res = (
-          await http.put<{ id: string }>("/torrents/addTorrent", data.torrentBytes, {
+          await http.put<{ id: string }>("/debrid/torrents/addTorrent", data.torrentBytes, {
             params: { host: "real-debrid.com" },
           })
         ).data;
         id = res.id;
       } else {
         const res = (
-          await http.postForm<{ id: string }>("/torrents/addMagnet", {
+          await http.postForm<{ id: string }>("/debrid/torrents/addMagnet", {
             magnet: data.magnet,
           })
         ).data;

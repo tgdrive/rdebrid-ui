@@ -32,6 +32,12 @@ export const base64ToBinary = (base64: string) =>
       .map((x) => x.charCodeAt(0)),
   );
 
+export function formattedLongDate(rawDate: string): string {
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
+  }).format(new Date(rawDate));
+}
+
 export const size = partial({ standard: "jedec", round: 0 });
 
 export const size2round = partial({ standard: "jedec" });

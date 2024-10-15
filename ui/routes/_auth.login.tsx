@@ -23,7 +23,7 @@ export const Logincomponent = memo(() => {
   const handleOnboarding = useCallback(async () => {
     setStartOnBoarding(true);
     const res = await http.get<OauthData>(
-      "/oauth/v2/device/code?client_id=X245A4XAIBGVM&new_credentials=yes",
+      "/debrid/oauth/v2/device/code?client_id=X245A4XAIBGVM&new_credentials=yes",
     );
     setOauthData(res.data);
   }, []);
@@ -35,7 +35,7 @@ export const Logincomponent = memo(() => {
 
     queryFn: async ({ signal }) => {
       return (
-        await http.get<DebridCredentials>("/oauth/v2/device/credentials", {
+        await http.get<DebridCredentials>("/debrid/oauth/v2/device/credentials", {
           params: {
             client_id: DebridClientId,
             code: oauthData?.device_code,
