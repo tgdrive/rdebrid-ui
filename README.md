@@ -8,6 +8,7 @@
 - SPA (Single Page Application): The app is a single page application, which means it's fast and responsive.
 - **Bulk Delete**: Easily delete multiple items at once.
 - **Torrent Availability Checking**: Check the availability of magnet before adding torrent.
+- Search torrent from `BTdig` index.
 - **Tor2Magnet**: Convert Torrent files to Magnet no need of any external tool.
 
 ![demo](./demos/demo1.jpg)
