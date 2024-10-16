@@ -10,6 +10,7 @@ import type { DebridCredentials, OauthData } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { Icons } from "@/ui/utils/icons";
 import { CopyButton } from "../components/copy-button";
+import { valibotSearchValidator } from "@tanstack/router-valibot-adapter";
 
 const DebridClientId = "X245A4XAIBGVM";
 
@@ -117,5 +118,5 @@ export const Logincomponent = memo(() => {
 
 export const Route = createFileRoute("/_auth/login")({
   component: Logincomponent,
-  validateSearch: (search) => loginQuery.parse(search),
+  validateSearch: valibotSearchValidator(loginQuery),
 });
