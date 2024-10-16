@@ -181,7 +181,7 @@ export function BtSearchList() {
         <p
           className={clsx(
             "text-center text-lg text-zinc-400",
-            "absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
+            "absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
           )}
         >
           Search BTDig Index
@@ -198,7 +198,11 @@ export function BtSearchList() {
             items={data.torrents}
             selectionMode="none"
             variant="flat"
-            emptyContent={<p className="text-center text-lg">No torrents found</p>}
+            emptyContent={
+              <p className="text-center text-lg text-zinc-400 absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                No torrents found
+              </p>
+            }
           >
             {(item) => (
               <ListboxItem

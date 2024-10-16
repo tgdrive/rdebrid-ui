@@ -1,7 +1,7 @@
 import type { HonoBinding } from "@/types";
 import { Hono } from "hono";
 import { fallback, object, picklist, string, safeParse, pipe, transform } from "valibot";
-import axios from "feaxios";
+import axios, { isAxiosError } from "feaxios";
 import { XMLParser } from "fast-xml-parser";
 
 type RssFeedResponse = {
@@ -86,51 +86,60 @@ router.get("/", async (c) => {
 
   const { q, page, orderBy, category } = result.output;
 
-  const reqPromises = [
-    axios.get("https://bt4gprx.com/search", {
-      params: {
-        q,
-        p: page,
-        orderby: orderBy,
-        category,
-        page: "rss",
+  try {
+    const reqPromises = [
+      axios.get("https://bt4gprx.com/search", {
+        params: {
+          q,
+          p: page,
+          orderby: orderBy,
+          category,
+          page: "rss",
+        },
+      }),
+      axios.get("https://bt4gprx.com/search", {
+        params: {
+          q,
+          category,
+          orderby: orderBy,
+        },
+      }),
+    ];
+    const responses = await Promise.all(reqPromises);
+
+    const totalCount = extractTotalPages(responses[responses.length - 1].data);
+
+    const parser = new XMLParser();
+    const obj = parser.parse(responses[0].data) as RssFeedResponse;
+
+    if (!Array.isArray(obj.rss.channel.item)) {
+      obj.rss.channel.item = [obj.rss.channel.item];
+    }
+    const data = obj.rss.channel.item.map((item) => ({
+      title: item.title,
+      magnet: removeTrackersFromMagnet(item.link),
+      link: item.guid,
+      createdAt: formatToUTC(item.pubDate),
+      size: item.description.split("<br>")[1],
+    }));
+
+    return c.json({
+      torrents: data,
+      meta: {
+        total: totalCount,
+        page,
+        pages: Math.ceil(totalCount / 15),
       },
-    }),
-    axios.get("https://bt4gprx.com/search", {
-      params: {
-        q,
-        category,
-        orderby: orderBy,
-      },
-    }),
-  ];
-
-  const responses = await Promise.all(reqPromises);
-
-  const totalCount = extractTotalPages(responses[responses.length - 1].data);
-
-  const parser = new XMLParser();
-  const obj = parser.parse(responses[0].data) as RssFeedResponse;
-
-  if (!Array.isArray(obj.rss.channel.item)) {
-    obj.rss.channel.item = [obj.rss.channel.item];
+    });
+  } catch (error) {
+    if (isAxiosError(error) && error.response?.status === 404) {
+      return c.json({
+        torrents: [],
+        meta: {},
+      });
+    }
+    throw error;
   }
-  const data = obj.rss.channel.item.map((item) => ({
-    title: item.title,
-    magnet: removeTrackersFromMagnet(item.link),
-    link: item.guid,
-    createdAt: formatToUTC(item.pubDate),
-    size: item.description.split("<br>")[1],
-  }));
-
-  return c.json({
-    torrents: data,
-    meta: {
-      total: totalCount,
-      page,
-      pages: Math.ceil(totalCount / 15),
-    },
-  });
 });
 
 export default router;
