@@ -10,7 +10,7 @@ type RssFeedResponse = {
       title: string;
       description: string;
       link: string;
-      item: Array<{
+      item?: Array<{
         title: string;
         link: string;
         guid: string;
@@ -112,10 +112,10 @@ router.get("/", async (c) => {
     const parser = new XMLParser();
     const obj = parser.parse(responses[0].data) as RssFeedResponse;
 
-    if (!Array.isArray(obj.rss.channel.item)) {
+    if (obj.rss.channel.item && !Array.isArray(obj.rss.channel.item)) {
       obj.rss.channel.item = [obj.rss.channel.item];
     }
-    const data = obj.rss.channel.item.map((item) => ({
+    const data = obj.rss.channel.item?.map((item) => ({
       title: item.title,
       magnet: removeTrackersFromMagnet(item.link),
       link: item.guid,
@@ -124,7 +124,7 @@ router.get("/", async (c) => {
     }));
 
     return c.json({
-      torrents: data,
+      torrents: data || [],
       meta: {
         total: totalCount,
         page,

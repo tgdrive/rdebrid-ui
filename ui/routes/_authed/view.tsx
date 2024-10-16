@@ -14,6 +14,7 @@ export const Route = createFileRoute("/_authed/view")({
       title: capitalize(match.search.type),
     },
   ],
-  loader: ({ context: { queryClient }, deps: { search } }) =>
-    queryClient.ensureQueryData(debridItemsQueryOptions(search)),
+  wrapInSuspense: true,
+  loader: async ({ context: { queryClient }, deps: { search } }) =>
+    await queryClient.ensureQueryData(debridItemsQueryOptions(search)),
 });

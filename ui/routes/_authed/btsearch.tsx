@@ -9,7 +9,6 @@ import {
   Input,
 } from "@nextui-org/react";
 import { Icons } from "@/ui/utils/icons";
-
 import type { Selection } from "@nextui-org/react";
 import { BtSearchList } from "@/ui/components/btsearch-list";
 import { btSearchItemsQueryOptions } from "@/ui/utils/queryOptions";
@@ -26,6 +25,7 @@ export const Route = createFileRoute("/_authed/btsearch")({
       title: match.search.q,
     },
   ],
+  wrapInSuspense: true,
   loader: async ({ context: { queryClient }, deps }) => {
     await queryClient.ensureQueryData(btSearchItemsQueryOptions(deps));
   },
@@ -36,7 +36,7 @@ const SearchInput = () => {
 
   const navigate = useNavigate();
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(q || "");
 
   const isFetching = useIsFetching({ queryKey: ["btsearch"] });
 
@@ -45,7 +45,7 @@ const SearchInput = () => {
       e.preventDefault();
       navigate({
         to: "/btsearch",
-        search: (prev) => ({ ...prev, q: search }),
+        search: (prev) => ({ ...prev, q: search, page: 1 }),
       });
     },
     [search],
@@ -62,7 +62,7 @@ const SearchInput = () => {
           ],
           input: "text-sm",
         }}
-        defaultValue={q || ""}
+        defaultValue={search}
         labelPlacement="outside"
         placeholder="Search..."
         isClearable
