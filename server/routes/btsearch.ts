@@ -68,7 +68,7 @@ function extractTotalPages(input: string) {
 
 const router = new Hono<HonoBinding>({ strict: false });
 
-router.get("/search", async (c) => {
+router.get("/", async (c) => {
   const result = safeParse(QuerySchema, c.req.query());
   if (!result.success) {
     return new Response(

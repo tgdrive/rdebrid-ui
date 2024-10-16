@@ -1,6 +1,5 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import debounce from "lodash.debounce";
+import { createFileRoute, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useCallback, useState } from "react";
 import {
   Button,
   Dropdown,
@@ -16,6 +15,7 @@ import { BtSearchList } from "@/ui/components/btsearch-list";
 import { btSearchItemsQueryOptions } from "@/ui/utils/queryOptions";
 import { valibotSearchValidator } from "@tanstack/router-valibot-adapter";
 import { btdigParamsSchema } from "@/ui/utils/schema";
+import { useIsFetching } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_authed/btsearch")({
   component: Component,
@@ -27,8 +27,7 @@ export const Route = createFileRoute("/_authed/btsearch")({
     },
   ],
   loader: async ({ context: { queryClient }, deps }) => {
-    if (!deps.q) return;
-    await queryClient.prefetchInfiniteQuery(btSearchItemsQueryOptions(deps));
+    await queryClient.ensureQueryData(btSearchItemsQueryOptions(deps));
   },
 });
 
@@ -37,53 +36,45 @@ const SearchInput = () => {
 
   const navigate = useNavigate();
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [search, setSearch] = useState("");
 
-  const debouncedSearch = useMemo(
-    () => debounce((search: string) => setSearchTerm(search), 500),
-    [],
-  );
+  const isFetching = useIsFetching({ queryKey: ["btsearch"] });
 
-  useEffect(() => {
-    if (searchTerm) {
+  const onSubmit = useCallback(
+    (e: React.BaseSyntheticEvent) => {
+      e.preventDefault();
       navigate({
         to: "/btsearch",
-        search: (prev) => ({ ...prev, q: searchTerm }),
+        search: (prev) => ({ ...prev, q: search }),
         replace: true,
       });
-    }
-  }, [searchTerm, navigate]);
-
-  useEffect(() => {
-    return () => {
-      debouncedSearch.cancel();
-    };
-  }, []);
-
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      debouncedSearch(e.target.value);
     },
-    [debouncedSearch],
+    [search],
   );
 
   return (
-    <Input
-      aria-label="Search"
-      classNames={{
-        inputWrapper: [
-          "bg-white/5 group-data-[hover=true]:bg-white/10 group-data-[focus=true]:bg-white/5",
-          "rounded-full",
-        ],
-        input: "text-sm",
-      }}
-      defaultValue={q || ""}
-      labelPlacement="outside"
-      placeholder="Search..."
-      isClearable
-      onClear={() => setSearchTerm("")}
-      onChange={handleInputChange}
-    />
+    <form onSubmit={onSubmit} className="w-full">
+      <Input
+        aria-label="Search"
+        classNames={{
+          inputWrapper: [
+            "bg-white/5 group-data-[hover=true]:bg-white/10 group-data-[focus=true]:bg-white/5",
+            "rounded-full",
+          ],
+          input: "text-sm",
+        }}
+        defaultValue={q || ""}
+        labelPlacement="outside"
+        placeholder="Search..."
+        isClearable
+        onClear={() => setSearch("")}
+        startContent={
+          <div>{isFetching ? <Icons.Refresh className="animate-spin" /> : <Icons.Search />}</div>
+        }
+        type="search"
+        onChange={(e) => setSearch(e.target.value.trim())}
+      />
+    </form>
   );
 };
 

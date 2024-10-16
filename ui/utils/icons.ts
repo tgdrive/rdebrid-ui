@@ -33,6 +33,7 @@ import MingcuteSearchFill from "~icons/mingcute/search-fill";
 import TablerDotsVertical from "~icons/tabler/dots-vertical";
 import TablerCategory from "~icons/tabler/category";
 import IcRoundSort from "~icons/ic/round-sort";
+import IcRoundRefresh from "~icons/ic/round-refresh";
 
 export const Icons = {
   HomeOutline: TablerHome,
@@ -71,4 +72,5 @@ export const Icons = {
   DotsVertical: TablerDotsVertical,
   Catergory: TablerCategory,
   Sort: IcRoundSort,
+  Refresh: IcRoundRefresh,
 };

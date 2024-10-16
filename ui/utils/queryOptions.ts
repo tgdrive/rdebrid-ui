@@ -7,13 +7,7 @@ import type {
 } from "@/types";
 import http from "@/ui/utils/http";
 import type { Session } from "@auth/core/types";
-import {
-  infiniteQueryOptions,
-  keepPreviousData,
-  queryOptions,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { keepPreviousData, queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { BtDigParams, DebridParams } from "./schema";
 import pLimit from "p-limit";
 
@@ -27,22 +21,18 @@ export const sessionQueryOptions = queryOptions({
 });
 
 export const btSearchItemsQueryOptions = (params: BtDigParams) =>
-  infiniteQueryOptions({
-    queryKey: ["btdig", params],
-    queryFn: async ({ pageParam = 1, signal }) =>
-      (
-        await http.get<BtSearchResponse>("/btdig/search", {
-          params: {
-            ...params,
-            page: pageParam,
-          },
-          signal,
-        })
-      ).data,
-    enabled: !!params.q,
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, _) =>
-      lastPage.meta.page + 1 > lastPage.meta.pages ? undefined : lastPage.meta.page + 1,
+  queryOptions({
+    queryKey: ["btsearch", params],
+    queryFn: async ({ signal }) =>
+      params.q
+        ? (
+            await http.get<BtSearchResponse>("/btsearch", {
+              params,
+              signal,
+            })
+          ).data
+        : ({ torrents: [], meta: {} } as unknown as BtSearchResponse),
+    placeholderData: keepPreviousData,
   });
 
 export const debridItemsQueryOptions = (params: DebridParams) =>

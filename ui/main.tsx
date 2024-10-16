@@ -35,11 +35,16 @@ if (!rootElement.innerHTML) {
   root.render(
     <QueryClientProvider client={getQueryClient()}>
       <NextUIProvider>
-        <Toaster position="bottom-right" />
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            className: "!bg-radial-1 !bg-background !text-foreground shadow-medium min-w-[220px]",
+          }}
+        />
         <RouterProvider router={router} />
         <TailwindIndicator />
       </NextUIProvider>
-      <ReactQueryDevtools buttonPosition="bottom-right" />
+      <ReactQueryDevtools buttonPosition="bottom-left" />
     </QueryClientProvider>,
   );
 }

@@ -27,10 +27,8 @@ import { useDebridStore, useSelectModalStore } from "@/ui/utils/store";
 import { CopyButton } from "./copy-button";
 import { Icons } from "@/ui/utils/icons";
 import clsx from "clsx";
-import { scrollClasses } from "@/ui/utils/classes";
+import { paginationItemClass, scrollClasses } from "@/ui/utils/classes";
 import { getQueryClient } from "../utils/queryClient";
-
-const paginationItemClass = "bg-white/5 [&[data-hover=true]:not([data-active=true])]:bg-white/10";
 
 const getSelectedIds = (rootNode: FileNode, selectedPaths: Set<string>) => {
   const selectedIds: number[] = [];

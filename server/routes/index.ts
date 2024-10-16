@@ -4,7 +4,7 @@ import { Hono } from "hono";
 
 import AuthRouter from "./auth";
 import DebridRouter from "./debrid";
-import BTDigRouter from "./btdig";
+import BTDigRouter from "./btsearch";
 
 const router = new Hono({ strict: false });
 
@@ -14,7 +14,7 @@ router.route("/auth", AuthRouter);
 
 router.route("/debrid", DebridRouter);
 
-router.route("/btdig", BTDigRouter);
+router.route("/btsearch", BTDigRouter);
 
 router.get("/cors", async (c) => {
   const link = c.req.query("link");

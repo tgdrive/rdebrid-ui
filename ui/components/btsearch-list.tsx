@@ -1,4 +1,4 @@
-import { type Key, useCallback, useEffect, useRef, type MouseEvent } from "react";
+import { type Key, useCallback, type MouseEvent } from "react";
 import {
   Button,
   Dropdown,
@@ -7,18 +7,23 @@ import {
   DropdownTrigger,
   Listbox,
   ListboxItem,
+  Pagination,
 } from "@nextui-org/react";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { btSearchItemsQueryOptions, debridTorrentQueryOptions } from "@/ui/utils/queryOptions";
-import { useSearch } from "@tanstack/react-router";
-import { scrollClasses } from "@/ui/utils/classes";
-import { useInView } from "framer-motion";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  btSearchItemsQueryOptions,
+  debridAvailabilityOptions,
+  debridTorrentQueryOptions,
+} from "@/ui/utils/queryOptions";
+import { useNavigate, useSearch } from "@tanstack/react-router";
+import { paginationItemClass, scrollClasses } from "@/ui/utils/classes";
 import { Icons } from "@/ui/utils/icons";
 import { copyDataToClipboard, formattedLongDate } from "@/ui/utils/common";
 import clsx from "clsx";
 import { useDebridStore, useSelectModalStore } from "@/ui/utils/store";
-import { getQueryClient } from "../utils/queryClient";
+import { getQueryClient } from "@/ui/utils/queryClient";
 import http from "@/ui/utils/http";
+import { toast } from "react-hot-toast";
 
 const ControlDropdown = () => {
   const { open, cords } = useDebridStore((state) => state.dropdown);
@@ -29,22 +34,62 @@ const ControlDropdown = () => {
   const onAction = useCallback(
     async (key: Key) => {
       if (key === "add") {
-        const res = (
-          await http.postForm<{ id: string }>("/debrid/torrents/addMagnet", {
-            magnet: item.magnet,
-          })
-        ).data;
-
-        const torrent = await getQueryClient().ensureQueryData(debridTorrentQueryOptions(res.id));
-        actions.setCurrentItem(torrent);
-        actions.setOpen(true);
+        toast.promise(
+          (async () => {
+            const res = await http.postForm<{ id: string }>("/debrid/torrents/addMagnet", {
+              magnet: item.magnet,
+            });
+            const torrent = await getQueryClient().ensureQueryData(
+              debridTorrentQueryOptions(res.data.id),
+            );
+            actions.setCurrentItem(torrent);
+            actions.setOpen(true);
+          })(),
+          {
+            loading: "Adding torrent",
+            success: "Torrent added",
+            error: "Failed to add torrent",
+          },
+          {
+            error: {
+              duration: 2000,
+            },
+          },
+        );
       } else if (key === "availability") {
-        // console.log("Check availability");
+        toast.promise(
+          getQueryClient().ensureQueryData(debridAvailabilityOptions(item.magnet)),
+          {
+            loading: "Checking availability",
+            success: (data) =>
+              data?.avaliabilities && data.avaliabilities.length > 0
+                ? `${data.avaliabilities.length} Availability found`
+                : "No Availability found",
+            error: (err) => err.toString(),
+          },
+          {
+            error: {
+              duration: 2000,
+            },
+          },
+        );
       } else if (key === "copy") {
-        copyDataToClipboard(item.magnet);
+        toast.promise(
+          copyDataToClipboard(item.magnet),
+          {
+            loading: "",
+            success: "Link copied",
+            error: "Failed to copy",
+          },
+          {
+            error: {
+              duration: 2000,
+            },
+          },
+        );
       }
     },
-    [item],
+    [item?.magnet],
   );
   return (
     <Dropdown
@@ -66,10 +111,25 @@ const ControlDropdown = () => {
       >
         <DropdownItem key="add">Add Torrent</DropdownItem>
         <DropdownItem key="availability">Check Availability</DropdownItem>
-        <DropdownItem as={"a"} rel="noopener noreferrer" href={item?.magnet} key="open">
+        <DropdownItem
+          as={"a"}
+          target="_blank"
+          rel="noopener noreferrer"
+          href={item?.magnet}
+          key="magnet"
+        >
           Open Magnet
         </DropdownItem>
         <DropdownItem key="copy">Copy Magnet</DropdownItem>
+        <DropdownItem
+          as={"a"}
+          target="_blank"
+          rel="noopener noreferrer"
+          href={item?.link}
+          key="link"
+        >
+          Open Link
+        </DropdownItem>
       </DropdownMenu>
     </Dropdown>
   );
@@ -78,21 +138,7 @@ const ControlDropdown = () => {
 export function BtSearchList() {
   const search = useSearch({ from: "/_authed/btsearch" });
 
-  const { data, hasNextPage, fetchNextPage, isSuccess } = useInfiniteQuery(
-    btSearchItemsQueryOptions(search),
-  );
-
-  const torrents = data?.pages.flatMap((page) => page.torrents) ?? [];
-
-  const loadingRef = useRef<HTMLDivElement | null>(null);
-
-  const inView = useInView(loadingRef, {
-    amount: "some",
-  });
-
-  useEffect(() => {
-    if (inView && hasNextPage) fetchNextPage();
-  }, [inView, hasNextPage]);
+  const { data } = useSuspenseQuery(btSearchItemsQueryOptions(search));
 
   const actions = useDebridStore((state) => state.actions);
 
@@ -103,11 +149,32 @@ export function BtSearchList() {
     actions.setCurrentBtTorrent(item);
   }, []);
 
+  const navigate = useNavigate();
+
+  const handlePageChange = useCallback(
+    (page: number) =>
+      navigate({ to: "/btsearch", search: (prev) => ({ ...prev, page }), resetScroll: true }),
+    [],
+  );
+
   return (
     <>
       <div className="flex">
-        {data?.pages?.[0].meta?.total && (
-          <p className="px-4 py-1 text-medium">{data.pages?.[0].meta.total || 0} items</p>
+        {data.torrents.length > 0 && (
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            color="primary"
+            page={data.meta.page}
+            total={data.meta.pages}
+            onChange={handlePageChange}
+            classNames={{
+              item: paginationItemClass,
+              prev: paginationItemClass,
+              next: paginationItemClass,
+            }}
+          />
         )}
       </div>
       {!search.q && (
@@ -117,10 +184,10 @@ export function BtSearchList() {
             "absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
           )}
         >
-          Search Torrent Index
+          Search BTDig Index
         </p>
       )}
-      {!!search.q && isSuccess && (
+      {!!search.q && (
         <>
           <ControlDropdown />
           <Listbox
@@ -128,15 +195,10 @@ export function BtSearchList() {
               base: ["overflow-auto", scrollClasses],
               list: "gap-4",
             }}
-            items={torrents}
+            items={data.torrents}
             selectionMode="none"
             variant="flat"
             emptyContent={<p className="text-center text-lg">No torrents found</p>}
-            bottomContent={
-              <div ref={loadingRef} className="size-full flex items-center justify-center p-2">
-                {hasNextPage && <Icons.Loading />}
-              </div>
-            }
           >
             {(item) => (
               <ListboxItem
