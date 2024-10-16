@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useState } from "react";
 import {
   Button,
@@ -46,7 +46,6 @@ const SearchInput = () => {
       navigate({
         to: "/btsearch",
         search: (prev) => ({ ...prev, q: search }),
-        replace: true,
       });
     },
     [search],
