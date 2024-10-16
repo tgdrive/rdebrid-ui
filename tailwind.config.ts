@@ -32,7 +32,7 @@ export default {
       },
       backgroundImage: {
         radial:
-          "radial-gradient(at 50% -10%, hsl(183.32deg 43.65% 44.06% / 34%) 5%, hsl(0deg 0% 0% / 45%) 90%)",
+          "radial-gradient(at 50% -10%, hsl(183.06deg 43.75% 43.92% / 22%) 5%, hsl(0deg 0% 0% / 45%) 90%)",
         "radial-1":
           "radial-gradient(at 90% 0%,hsl(183.32deg 43.65% 44.06% / 24%) 5%,hsl(0deg 0% 0% / 0%) 90%)",
       },
