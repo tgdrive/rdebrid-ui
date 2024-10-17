@@ -25,6 +25,7 @@ export const Route = createFileRoute("/_authed/downloader/$tabId")({
       return queryClient.ensureQueryData(debridTorrentQueryOptions(search.fileId));
     }
   },
+  wrapInSuspense: true,
 });
 
 function Component() {

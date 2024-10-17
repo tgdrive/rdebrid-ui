@@ -12,7 +12,6 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/react";
-import { ForwardLink } from "../forward-link";
 import { useDebridStore } from "@/ui/utils/store";
 import { Icons } from "@/ui/utils/icons";
 import { scrollClasses } from "@/ui/utils/classes";
@@ -20,6 +19,7 @@ import { ListBox, ListBoxItem } from "react-aria-components";
 import clsx from "clsx";
 import { useShallow } from "zustand/shallow";
 import type { Selection } from "@nextui-org/react";
+import { useNavigate } from "@tanstack/react-router";
 
 const DownloadDropdown = () => {
   const { open, cords } = useDebridStore((state) => state.dropdown);
@@ -29,10 +29,17 @@ const DownloadDropdown = () => {
 
   const mutation = useDeleteDebrid("downloads", [item.id]);
 
+  const navigate = useNavigate();
+
   const onAction = useCallback(
     async (key: Key) => {
       if (key === "delete") {
         mutation.mutate();
+      } else if (key === "play") {
+        navigate({
+          to: "/watch/$",
+          params: { _splat: item.download.replace("https://", "") },
+        });
       }
     },
     [mutation],
@@ -65,16 +72,7 @@ const DownloadDropdown = () => {
         >
           Original Link
         </DropdownItem>
-        <DropdownItem
-          as={ForwardLink}
-          title="Play"
-          to="/watch/$"
-          params={{
-            _splat: item.download.replace("https://", ""),
-          }}
-          key="play"
-          startContent={<Icons.Play />}
-        >
+        <DropdownItem title="Play" key="play" startContent={<Icons.Play />}>
           Play
         </DropdownItem>
         <DropdownItem

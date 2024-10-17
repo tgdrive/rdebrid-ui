@@ -12,7 +12,6 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/react";
-import { ForwardLink } from "@/ui/components/forward-link";
 import { useDebridStore, useSelectModalStore } from "@/ui/utils/store";
 import { Icons } from "@/ui/utils/icons";
 import { scrollClasses } from "@/ui/utils/classes";
@@ -21,6 +20,7 @@ import clsx from "clsx";
 import { useShallow } from "zustand/shallow";
 import type { Selection } from "@nextui-org/react";
 import toast from "react-hot-toast";
+import { useNavigate } from "@tanstack/react-router";
 
 const TorrentDropdown = () => {
   const { open, cords, item, actions } = useDebridStore(
@@ -35,6 +35,8 @@ const TorrentDropdown = () => {
   const modalActions = useSelectModalStore((state) => state.actions);
 
   const mutation = useDeleteDebrid("torrents", [item.id]);
+
+  const navigate = useNavigate();
 
   const onAction = useCallback(
     async (key: Key) => {
@@ -56,6 +58,12 @@ const TorrentDropdown = () => {
       } else if (key === "view") {
         modalActions.setCurrentItem(item);
         modalActions.setOpen(true);
+      } else if (key === "unrestict") {
+        navigate({
+          to: "/downloader/$tabId",
+          search: { fileId: item.id },
+          params: { tabId: "links" },
+        });
       }
     },
     [mutation],
@@ -82,11 +90,7 @@ const TorrentDropdown = () => {
           View Files
         </DropdownItem>
         <DropdownItem
-          as={ForwardLink}
           title="Unrestict Links"
-          to="/downloader/$tabId"
-          search={{ fileId: item.id }}
-          params={{ tabId: "links" }}
           key="unrestict"
           startContent={<Icons.DownloadDashed />}
         >
