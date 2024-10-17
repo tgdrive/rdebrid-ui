@@ -74,6 +74,7 @@ export type DebridUnlock = {
   type: string;
   mimeType: string;
   error?: string;
+  generated: string;
 };
 
 export type TorrentAvaliabilityResponse = {
@@ -86,6 +87,10 @@ export type TorrentAvaliabilityResponse = {
     }>;
   };
 };
+
+export type BTorrent = BtSearchResponse["torrents"][0];
+
+export type DebridItem = Nullish<BTorrent | DebridTorrent | DebridUnlock>;
 
 export type TorrentAvaliability = {
   hash: string;

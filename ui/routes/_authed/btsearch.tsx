@@ -10,7 +10,7 @@ import {
 } from "@nextui-org/react";
 import { Icons } from "@/ui/utils/icons";
 import type { Selection } from "@nextui-org/react";
-import { BtSearchList } from "@/ui/components/btsearch-list";
+import { BtSearchList } from "@/ui/components/list/btsearch";
 import { btSearchItemsQueryOptions } from "@/ui/utils/queryOptions";
 import { valibotSearchValidator } from "@tanstack/router-valibot-adapter";
 import { btdigParamsSchema } from "@/ui/utils/schema";

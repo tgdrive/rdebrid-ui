@@ -1,6 +1,6 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
-import type { DebridTorrent, DebridTorrentFile, DebridUnlock, FileNode } from "@/types";
-import { size, size2round } from "@/ui/utils/common";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import type { DebridTorrent, DebridTorrentFile, FileNode } from "@/types";
+import { size2round } from "@/ui/utils/common";
 import {
   debridAvailabilityOptions,
   debridItemsQueryOptions,
@@ -9,9 +9,7 @@ import {
   useDeleteDebrid,
 } from "@/ui/utils/queryOptions";
 import {
-  Avatar,
   Button,
-  Checkbox,
   Modal,
   ModalBody,
   ModalContent,
@@ -21,14 +19,14 @@ import {
 } from "@nextui-org/react";
 import { useQueries, useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { ForwardLink } from "./forward-link";
-import { DebridTorrentTree } from "./file-tree";
-import { useDebridStore, useSelectModalStore } from "@/ui/utils/store";
-import { CopyButton } from "./copy-button";
+import { DebridTorrentTree } from "../file-tree";
+import { useSelectModalStore } from "@/ui/utils/store";
 import { Icons } from "@/ui/utils/icons";
-import clsx from "clsx";
-import { paginationItemClass, scrollClasses } from "@/ui/utils/classes";
-import { getQueryClient } from "../utils/queryClient";
+import { paginationItemClass } from "@/ui/utils/classes";
+import { getQueryClient } from "@/ui/utils/queryClient";
+import type { Selection } from "@nextui-org/react";
+import { DowloadList } from "./download";
+import { TorrentList } from "./torrent";
 
 const getSelectedIds = (rootNode: FileNode, selectedPaths: Set<string>) => {
   const selectedIds: number[] = [];
@@ -220,213 +218,6 @@ export function FileSelectModal() {
   );
 }
 
-interface TorrentListItemProps {
-  item: DebridTorrent;
-}
-
-const TorrentListItem = memo(({ item }: TorrentListItemProps) => {
-  const modalActions = useSelectModalStore((state) => state.actions);
-  const onModalOpen = useCallback(() => {
-    modalActions.setCurrentItem(item);
-    modalActions.setOpen(true);
-  }, []);
-
-  const selected = useDebridStore((state) => state.selectedIds[item.id] || false);
-
-  const selectMode = useDebridStore((state) => state.selectMode);
-
-  const actions = useDebridStore((state) => state.actions);
-
-  const mutation = useDeleteDebrid("torrents", [item.id]);
-
-  const onSelectionChange = useCallback(
-    (isSelected: boolean) => {
-      if (isSelected) {
-        actions.addSelectedId(item.id);
-      } else {
-        actions.removeSelectedId(item.id);
-      }
-    },
-    [item.id],
-  );
-
-  return (
-    <div className="hover:bg-white/5 transition grid gap-x-4 gap-y-2 cursor-pointer grid-cols-6 rounded-3xl py-2 px-3">
-      <div className="flex gap-3 w-full col-span-6 sm:col-span-5 lg:col-span-4 items-center">
-        {selectMode && (
-          <Checkbox
-            isSelected={selected}
-            onValueChange={onSelectionChange}
-            size="lg"
-            classNames={{
-              base: "m-0",
-              wrapper: "before:rounded-full after:rounded-full mr-0",
-            }}
-            icon={<Icons.Check />}
-          />
-        )}
-        <p title={item.filename} className="text-bold text-md truncate capitalize">
-          {item.filename}
-        </p>
-      </div>
-
-      <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
-        {item.status === "downloading" && <Icons.AnimatedDownload />}
-
-        {item.status === "uploading" && <Icons.AnimatedUpload />}
-        {item.status === "downloaded" && <Icons.Check className="text-success" />}
-        {item.status === "error" && <Icons.Exclamation className="text-danger" />}
-        {item.status === "waiting_files_selection" && <Icons.SelectWait />}
-        <p className="text-bold text-sm truncate capitalize">
-          {item.progress}
-          {"%"}
-        </p>
-        {item.status === "downloading" && (
-          <p className="text-bold text-sm truncate">{size(item.speed!)}/s</p>
-        )}
-      </div>
-      <div className="flex items-center col-span-3 lg:col-span-1">
-        <Button
-          variant="light"
-          isIconOnly
-          title="View Files"
-          onPress={onModalOpen}
-          className="data-[hover=true]:bg-transparent"
-        >
-          <Icons.Eye />
-        </Button>
-
-        <Button
-          as={ForwardLink}
-          variant="light"
-          isIconOnly
-          to="/downloader/$tabId"
-          search={{ fileId: item.id }}
-          params={{ tabId: "links" }}
-          title="Unrestict Links"
-          className="data-[hover=true]:bg-transparent"
-        >
-          <Icons.DownloadDashed />
-        </Button>
-
-        <CopyButton title="Copy Links" value={item.links.length > 0 ? item.links.join("\n") : ""} />
-
-        <Button
-          variant="light"
-          isIconOnly
-          title="Delete"
-          onPress={() => mutation.mutate()}
-          className="data-[hover=true]:bg-transparent"
-        >
-          <Icons.Delete />
-        </Button>
-      </div>
-    </div>
-  );
-});
-
-interface DownloadListItemProps {
-  item: DebridUnlock;
-}
-
-export const DownloadListItem = memo(({ item }: DownloadListItemProps) => {
-  const selected = useDebridStore((state) => state.selectedIds[item.id] || false);
-
-  const selectMode = useDebridStore((state) => state.selectMode);
-
-  const actions = useDebridStore((state) => state.actions);
-
-  const mutation = useDeleteDebrid("downloads", [item.id]);
-
-  const onSelectionChange = useCallback(
-    (isSelected: boolean) => {
-      if (isSelected) {
-        actions.addSelectedId(item.id);
-      } else {
-        actions.removeSelectedId(item.id);
-      }
-    },
-    [item.id],
-  );
-
-  return (
-    <div className="hover:bg-white/5 transition grid gap-x-4 gap-y-2 cursor-pointer grid-cols-6 rounded-3xl py-2 px-3">
-      <div className="flex gap-3 w-full col-span-6 sm:col-span-4 items-center">
-        {selectMode ? (
-          <Checkbox
-            isSelected={selected}
-            onValueChange={onSelectionChange}
-            size="lg"
-            classNames={{
-              base: "m-0",
-              wrapper: "before:rounded-full after:rounded-full mr-0",
-            }}
-            icon={<Icons.Check />}
-          />
-        ) : (
-          <div className="size-10 p-2">
-            <Avatar title={item.host} className="flex-shrink-0 w-6 h-6 p-1" src={item.host_icon} />
-          </div>
-        )}
-        <p title={item.filename} className="text-bold text-md truncate capitalize ">
-          {item.filename}
-        </p>
-      </div>
-
-      <div className="flex items-center sm:ml-auto col-span-3 sm:col-span-2">
-        <Button
-          variant="light"
-          as={"a"}
-          title={"Original Link"}
-          isIconOnly
-          target="_blank"
-          rel="noopener noreferrer"
-          href={item.link}
-          className="data-[hover=true]:bg-transparent"
-        >
-          <Icons.ExternalLink />
-        </Button>
-
-        <Button
-          variant="light"
-          title={"Play"}
-          as={ForwardLink}
-          isIconOnly
-          to="/watch/$"
-          params={{
-            _splat: item.download.replace("https://", ""),
-          }}
-          className="data-[hover=true]:bg-transparent"
-        >
-          <Icons.Play />
-        </Button>
-
-        <Button
-          variant="light"
-          as={"a"}
-          title={"Download"}
-          isIconOnly
-          rel="noopener noreferrer"
-          href={item.download}
-          className="data-[hover=true]:bg-transparent"
-        >
-          <Icons.DownloadDashed />
-        </Button>
-
-        <Button
-          variant="light"
-          title={"Delete"}
-          isIconOnly
-          onClick={() => mutation.mutate()}
-          className="data-[hover=true]:bg-transparent"
-        >
-          <Icons.Delete />
-        </Button>
-      </div>
-    </div>
-  );
-});
-
 export default function DebridList() {
   const params = useSearch({ from: "/_authed/view" });
 
@@ -442,42 +233,33 @@ export default function DebridList() {
     [params.type],
   );
 
-  const actions = useDebridStore((state) => state.actions);
+  const [selectMode, setSelectMode] = useState(false);
 
-  const selectedIds = useDebridStore((state) => state.selectedIds);
+  const [selectedIds, setSelectedIds] = useState<Selection>(new Set());
 
-  const selectMode = useDebridStore((state) => state.selectMode);
-
-  const selectKeys = Object.keys(selectedIds);
+  const ids = useMemo(() => {
+    if (selectedIds === "all") {
+      return items.map((item) => item.id);
+    }
+    return Array.from(selectedIds) as string[];
+  }, [selectedIds, items]);
 
   const postLastPageDelete = useCallback(async () => {
-    let itemsSelectedOnPage = 0;
     if (params.page === totalPages && items.length > 0) {
-      for (const item of items) {
-        if (selectedIds[item.id]) {
-          itemsSelectedOnPage++;
-        }
-      }
-      if (itemsSelectedOnPage === items.length) {
-        await handlePageChange(params.page - 1, true);
-      }
+      if (ids.length === items.length) await handlePageChange(params.page - 1, true);
     }
-  }, [items, totalPages, params.page, selectedIds]);
-
-  const deleteMutation = useDeleteDebrid(params.type, selectKeys, postLastPageDelete);
-
-  const selectAll = useCallback(() => {
-    actions.addSelectedIds(items.map((item) => item.id));
-  }, [items]);
-
-  const onBulkDelete = useCallback(() => {
-    deleteMutation.mutateAsync().finally(() => actions.clearSelectedIds());
-  }, [deleteMutation]);
+  }, [items, totalPages, params.page, ids]);
 
   useEffect(() => {
-    actions.setSelectMode(false);
-    actions.clearSelectedIds();
-  }, [params.type]);
+    setSelectedIds(new Set());
+    setSelectMode(false);
+  }, [params.type, params.page]);
+
+  const deleteMutation = useDeleteDebrid(params.type, ids, postLastPageDelete);
+
+  const onBulkDelete = useCallback(() => {
+    deleteMutation.mutateAsync().finally(() => setSelectedIds(new Set()));
+  }, [deleteMutation]);
 
   const topContent = React.useMemo(() => {
     return (
@@ -502,7 +284,12 @@ export default function DebridList() {
           variant="flat"
           className="bg-white/5"
           isIconOnly
-          onPress={() => actions.toggleSelectMode()}
+          onPress={() =>
+            setSelectMode((prev) => {
+              setSelectedIds(new Set());
+              return !prev;
+            })
+          }
         >
           <Icons.SelectMode />
         </Button>
@@ -512,7 +299,12 @@ export default function DebridList() {
           className="bg-white/5"
           isIconOnly
           isDisabled={!selectMode}
-          onPress={selectAll}
+          onPress={() =>
+            setSelectedIds((prev) => {
+              if (prev === "all") return new Set();
+              return "all";
+            })
+          }
         >
           <Icons.SelectAll />
         </Button>
@@ -530,16 +322,16 @@ export default function DebridList() {
     );
   }, [params.page, totalPages, params.type, deleteMutation.isPending, selectMode]);
 
+  const List = params.type === "downloads" ? DowloadList : TorrentList;
   return (
     <div className="size-full grid gap-2 grid-rows-[auto_1fr]">
       {topContent}
-      <div
-        className={clsx("flex flex-col gap-4 px-2 pb-2 overflow-y-auto size-full", scrollClasses)}
-      >
-        {params.type === "torrents"
-          ? items.map((item) => <TorrentListItem key={item.id} item={item as DebridTorrent} />)
-          : items.map((item) => <DownloadListItem key={item.id} item={item as DebridUnlock} />)}
-      </div>
+      <List
+        selectMode={selectMode}
+        selectedIds={selectedIds}
+        setSelectedIds={setSelectedIds}
+        items={items as any}
+      />
     </div>
   );
 }

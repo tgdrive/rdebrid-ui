@@ -24,11 +24,12 @@ import { useDebridStore, useSelectModalStore } from "@/ui/utils/store";
 import { getQueryClient } from "@/ui/utils/queryClient";
 import http from "@/ui/utils/http";
 import { toast } from "react-hot-toast";
+import type { BTorrent } from "@/types";
 
 const ControlDropdown = () => {
   const { open, cords } = useDebridStore((state) => state.dropdown);
   const { closeDropdown } = useDebridStore((state) => state.actions);
-  const item = useDebridStore((state) => state.currentBtTorrent)!;
+  const item = useDebridStore((state) => state.currentDebridItem) as BTorrent;
   const actions = useSelectModalStore((state) => state.actions);
 
   const onAction = useCallback(
@@ -146,7 +147,7 @@ export function BtSearchList() {
     e.stopPropagation();
     actions.openDropdown();
     actions.setDropdownCords({ x: e.clientX, y: e.clientY });
-    actions.setCurrentBtTorrent(item);
+    actions.setCurrentDebridItem(item);
   }, []);
 
   const navigate = useNavigate();
@@ -193,11 +194,10 @@ export function BtSearchList() {
           <Listbox
             classNames={{
               base: ["overflow-auto", scrollClasses],
-              list: "gap-4",
+              list: "gap-4 px-2",
             }}
             items={data.torrents}
             selectionMode="none"
-            variant="flat"
             emptyContent={
               <p className="text-center text-lg text-zinc-400 absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                 No torrents found
@@ -213,13 +213,13 @@ export function BtSearchList() {
                 textValue={item.title}
               >
                 <div className="grid gap-x-4 gap-y-1 md:gap-y-0 cursor-pointer grid-cols-6 rounded-3xl p-2">
-                  <div className="col-span-6 sm:col-span-4 items-center">
+                  <div className="col-start-1 col-span-6 sm:col-span-5">
                     <p title={item.title} className="text-base truncate">
                       {item.title}
                     </p>
                   </div>
 
-                  <div className="flex sm:ml-auto col-span-2">
+                  <div className="flex ml-auto col-start-6 col-end-6 order-2 sm:order-none">
                     <Button
                       disableRipple
                       variant="light"
@@ -232,7 +232,7 @@ export function BtSearchList() {
                     </Button>
                   </div>
 
-                  <div className="col-span-4 items-center flex ml-auto sm:ml-0">
+                  <div className="items-center flex col-start-1 col-span-5">
                     <p className="text-sm text-zinc-400 min-w-20">{item.size}</p>
                     <p className="text-sm text-zinc-400">{formattedLongDate(item.createdAt)}</p>
                   </div>

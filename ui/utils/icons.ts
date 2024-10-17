@@ -31,6 +31,7 @@ import FlatColorIconsVlc from "~icons/flat-color-icons/vlc";
 import MingcuteSearchLine from "~icons/mingcute/search-line";
 import MingcuteSearchFill from "~icons/mingcute/search-fill";
 import TablerDotsVertical from "~icons/tabler/dots-vertical";
+import TablerDots from "~icons/tabler/dots";
 import TablerCategory from "~icons/tabler/category";
 import IcRoundSort from "~icons/ic/round-sort";
 import IcRoundRefresh from "~icons/ic/round-refresh";
@@ -70,6 +71,7 @@ export const Icons = {
   Search: MingcuteSearchLine,
   SearchFilled: MingcuteSearchFill,
   DotsVertical: TablerDotsVertical,
+  Dots: TablerDots,
   Catergory: TablerCategory,
   Sort: IcRoundSort,
   Refresh: IcRoundRefresh,

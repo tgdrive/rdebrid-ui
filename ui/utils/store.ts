@@ -1,6 +1,7 @@
-import type { BtSearchResponse, DebridTorrent, DebridUnlock } from "@/types";
+import type { DebridItem, DebridTorrent, DebridUnlock } from "@/types";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
+import { combine } from "zustand/middleware";
 
 type SelectModalState = {
   open: boolean;
@@ -23,102 +24,55 @@ export const useSelectModalStore = create<SelectModalState>((set) => ({
   },
 }));
 
-type DebridStore = {
-  unRestrictedFiles: DebridUnlock[];
-  unRestrictState: "running" | "idle";
-  selectMode: boolean;
-  selectedIds: Record<string, boolean>;
-  dropdown: { open: boolean; cords: { x: number; y: number } };
-  currentBtTorrent: BtSearchResponse["torrents"][0] | null;
-  actions: {
-    addSelectedId: (id: string) => void;
-    removeSelectedId: (id: string) => void;
-    clearSelectedIds: () => void;
-    setSelectMode: (selectMode: boolean) => void;
-    toggleSelectMode: () => void;
-    addSelectedIds: (ids: string[]) => void;
-    addUnrestrictedFile: (file: DebridUnlock) => void;
-    setUnRestrictState: (unRestrictState: "running" | "idle") => void;
-    clearUnrestrictedFiles: () => void;
-    openDropdown: () => void;
-    closeDropdown: () => void;
-    setDropdownCords: (cords: { x: number; y: number }) => void;
-    setCurrentBtTorrent: (torrent: BtSearchResponse["torrents"][0]) => void;
-  };
-};
+export const useDebridStore = create(
+  immer(
+    combine(
+      {
+        unRestrictedFiles: [] as DebridUnlock[],
+        unRestrictState: "idle" as "running" | "idle",
+        dropdown: {
+          open: false,
+          cords: { x: 0, y: 0 },
+        },
+        currentDebridItem: null as DebridItem,
+      },
+      (set) => ({
+        actions: {
+          addUnrestrictedFile: (file: DebridUnlock) =>
+            set((state) => {
+              state.unRestrictedFiles.push(file);
+            }),
 
-export const useDebridStore = create<DebridStore>()(
-  immer((set) => ({
-    unRestrictedFiles: [],
-    unRestrictState: "idle",
-    selectedIds: {},
-    selectMode: false,
-    dropdown: {
-      open: false,
-      cords: { x: 0, y: 0 },
-    },
-    currentBtTorrent: null,
-    actions: {
-      addSelectedId: (id: string) =>
-        set((state) => {
-          state.selectedIds[id] = true;
-        }),
-      removeSelectedId: (id: string) =>
-        set((state) => {
-          delete state.selectedIds[id];
-        }),
-      clearSelectedIds: () =>
-        set((state) => {
-          state.selectedIds = {};
-        }),
-      setSelectMode: (selectMode: boolean) =>
-        set((state) => {
-          state.selectMode = selectMode;
-        }),
-      toggleSelectMode: () =>
-        set((state) => {
-          state.selectMode = !state.selectMode;
-          if (!state.selectMode) {
-            state.selectedIds = {};
-          }
-        }),
-      addSelectedIds: (ids: string[]) =>
-        set((state) => {
-          ids.forEach((id) => {
-            state.selectedIds[id] = true;
-          });
-        }),
-
-      addUnrestrictedFile: (file: DebridUnlock) =>
-        set((state) => {
-          state.unRestrictedFiles.push(file);
-        }),
-
-      setUnRestrictState: (unRestrictState: "running" | "idle") =>
-        set((state) => {
-          state.unRestrictState = unRestrictState;
-        }),
-      clearUnrestrictedFiles: () =>
-        set((state) => {
-          state.unRestrictedFiles = [];
-        }),
-      openDropdown: () =>
-        set((state) => {
-          state.dropdown.open = true;
-        }),
-      closeDropdown: () =>
-        set((state) => {
-          state.dropdown.open = false;
-          state.dropdown.cords = { x: 0, y: 0 };
-        }),
-      setDropdownCords: (payload) =>
-        set((state) => {
-          state.dropdown.cords = payload;
-        }),
-      setCurrentBtTorrent: (torrent) =>
-        set((state) => {
-          state.currentBtTorrent = torrent;
-        }),
-    },
-  })),
+          setUnRestrictState: (unRestrictState: "running" | "idle") =>
+            set((state) => {
+              state.unRestrictState = unRestrictState;
+            }),
+          clearUnrestrictedFiles: () =>
+            set((state) => {
+              state.unRestrictedFiles = [];
+            }),
+          openDropdown: () =>
+            set((state) => {
+              state.dropdown.open = true;
+            }),
+          closeDropdown: () =>
+            set((state) => {
+              state.dropdown.open = false;
+              state.dropdown.cords = { x: 0, y: 0 };
+            }),
+          setDropdownCords: (payload: {
+            x: number;
+            y: number;
+          }) =>
+            set((state) => {
+              state.dropdown.cords = payload;
+            }),
+          setCurrentDebridItem: (item: DebridItem) =>
+            set((state) => {
+              state.currentDebridItem = item;
+            }),
+        },
+      }),
+    ),
+  ),
 );

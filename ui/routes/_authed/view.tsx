@@ -1,4 +1,4 @@
-import DebridList from "@/ui/components/debrid-list";
+import DebridList from "@/ui/components/list/debrid";
 import { debridItemsQueryOptions } from "@/ui/utils/queryOptions";
 import { debridParamsSchema } from "@/ui/utils/schema";
 import { createFileRoute } from "@tanstack/react-router";

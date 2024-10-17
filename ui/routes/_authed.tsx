@@ -1,18 +1,11 @@
 import { Navbar } from "@/ui/components/navbar";
 import { sessionQueryOptions } from "@/ui/utils/queryOptions";
 import type { QueryClient } from "@tanstack/react-query";
-import {
-  createFileRoute,
-  Outlet,
-  type ParsedLocation,
-  redirect,
-  useMatches,
-} from "@tanstack/react-router";
+import { createFileRoute, Outlet, type ParsedLocation, redirect } from "@tanstack/react-router";
 import { useSelectModalStore } from "@/ui/utils/store";
-import { FileSelectModal } from "@/ui/components/debrid-list";
+import { FileSelectModal } from "@/ui/components/list/debrid";
 import clsx from "clsx";
 import { SideNav } from "@/ui/components/side-nav";
-import { type ReactNode, useEffect } from "react";
 import { scrollClasses } from "@/ui/utils/classes";
 
 const checkAuth = async (queryClient: QueryClient, location: ParsedLocation, preload: boolean) => {
