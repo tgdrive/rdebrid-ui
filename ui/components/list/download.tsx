@@ -73,13 +73,10 @@ const DownloadDropdown = () => {
             Play
           </Link>
         </DropdownItem>
-        <DropdownItem
-          download
-          href={item.download}
-          key="download"
-          startContent={<Icons.Download />}
-        >
-          Download
+        <DropdownItem key="download" startContent={<Icons.Download />}>
+          <a rel="noopener noreferrer" className="no-underline block" href={item.download}>
+            Download
+          </a>
         </DropdownItem>
         <DropdownItem key="delete" startContent={<Icons.Delete />}>
           Delete

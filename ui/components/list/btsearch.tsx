@@ -110,6 +110,16 @@ const ControlDropdown = () => {
         }}
         onAction={onAction}
       >
+        <DropdownItem key="link" startContent={<Icons.ExternalLink />}>
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            className="no-underline block"
+            href={item?.link}
+          >
+            Open Link
+          </a>
+        </DropdownItem>
         <DropdownItem key="add" startContent={<Icons.CirclePlus />}>
           Add Torrent
         </DropdownItem>
@@ -127,16 +137,6 @@ const ControlDropdown = () => {
             href={item?.magnet}
           >
             Open Magnet
-          </a>
-        </DropdownItem>
-        <DropdownItem key="link" startContent={<Icons.ExternalLink />}>
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            className="no-underline block"
-            href={item?.link}
-          >
-            Open Link
           </a>
         </DropdownItem>
       </DropdownMenu>

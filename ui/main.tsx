@@ -11,6 +11,7 @@ import { Toaster } from "react-hot-toast";
 import { routeTree } from "./route-tree.gen";
 
 import "./styles/globals.css";
+import { Icons } from "./utils/icons";
 
 const router = createRouter({
   routeTree,
@@ -39,6 +40,12 @@ if (!rootElement.innerHTML) {
           position="bottom-right"
           toastOptions={{
             className: "!bg-radial-1 !bg-background !text-foreground shadow-medium min-w-[220px]",
+            success: {
+              icon: <Icons.CheckCircle className="text-success" />,
+            },
+            error: {
+              icon: <Icons.AlertCircleFilled className="text-danger" />,
+            },
           }}
         />
         <RouterProvider router={router} />

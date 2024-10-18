@@ -38,6 +38,7 @@ import IcRoundRefresh from "~icons/ic/round-refresh";
 import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled";
 import TablerCirclePlus from "~icons/tabler/circle-plus";
 import TablerZoomCheck from "~icons/tabler/zoom-check";
+import TablerAlertCircleFilled from "~icons/tabler/alert-circle-filled";
 
 export const Icons = {
   HomeOutline: TablerHome,
@@ -81,4 +82,5 @@ export const Icons = {
   CirclePlusFilled: TablerCirclePlusFilled,
   CirclePlus: TablerCirclePlus,
   CheckZoom: TablerZoomCheck,
+  AlertCircleFilled: TablerAlertCircleFilled,
 };
