@@ -16,7 +16,7 @@ config({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..
 
 declare module "hono" {
   interface ContextVariableMap {
-    proxyAgent: ProxyAgent | null;
+    proxyAgent?: ProxyAgent;
   }
 }
 
@@ -36,8 +36,14 @@ app.use(
 
 app.use("/api/*", (c, next) => {
   c.env = env(c);
-  c.set("proxyAgent", getProxyAgent(c.env.PROXY_URL));
   return next();
+});
+
+app.use("/api/btsearch/*", async (c, next) => {
+  const proxyAgent = getProxyAgent(c.env.PROXY_URL);
+  c.set("proxyAgent", proxyAgent);
+  await next();
+  proxyAgent?.close();
 });
 
 app.route("/api", IndexRouter);
