@@ -29,12 +29,6 @@ importers:
       '@nextui-org/use-clipboard':
         specifier: ^2.0.7
         version: 2.0.7(react@18.3.1)
-      '@react-aria/ssr':
-        specifier: ^3.9.6
-        version: 3.9.6(react@18.3.1)
-      '@react-aria/visually-hidden':
-        specifier: ^3.8.17
-        version: 3.8.17(react@18.3.1)
       '@tanstack/react-query':
         specifier: ^5.59.15
         version: 5.59.15(react@18.3.1)
@@ -50,12 +44,6 @@ importers:
       '@tanstack/router-vite-plugin':
         specifier: ^1.66.1
         version: 1.66.1(vite@5.4.9(@types/node@22.7.5)(terser@5.34.1))(webpack-sources@3.2.3)
-      '@types/bencode':
-        specifier: ^2.0.4
-        version: 2.0.4
-      '@types/magnet-uri':
-        specifier: ^5.1.5
-        version: 5.1.5
       bencode:
         specifier: ^4.0.0
         version: 4.0.0
@@ -80,9 +68,6 @@ importers:
       immer:
         specifier: ^10.1.1
         version: 10.1.1
-      jssha:
-        specifier: ^3.3.1
-        version: 3.3.1
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8
@@ -113,9 +98,6 @@ importers:
       uint8-util:
         specifier: ^2.2.5
         version: 2.2.5
-      undici:
-        specifier: ^6.20.1
-        version: 6.20.1
       usehooks-ts:
         specifier: ^3.1.0
         version: 3.1.0(react@18.3.1)
@@ -132,12 +114,6 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.3
         version: 1.9.3
-      '@cloudflare/workers-types':
-        specifier: ^4.20241011.0
-        version: 4.20241011.0
-      '@hono/node-server':
-        specifier: ^1.13.2
-        version: 1.13.2(hono@4.6.5)
       '@iconify/json':
         specifier: ^2.2.260
         version: 2.2.260
@@ -153,9 +129,18 @@ importers:
       '@tanstack/react-query-devtools':
         specifier: 5.59.15
         version: 5.59.15(@tanstack/react-query@5.59.15(react@18.3.1))(react@18.3.1)
+      '@types/bencode':
+        specifier: ^2.0.4
+        version: 2.0.4
+      '@types/deno':
+        specifier: npm:@teidesu/deno-types
+        version: '@teidesu/deno-types@2.0.1'
       '@types/lodash.debounce':
         specifier: ^4.0.9
         version: 4.0.9
+      '@types/magnet-uri':
+        specifier: ^5.1.5
+        version: 5.1.5
       '@types/react':
         specifier: ^18.3.11
         version: 18.3.11
@@ -168,9 +153,6 @@ importers:
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.47)
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
       postcss:
         specifier: ^8.4.47
         version: 8.4.47
@@ -806,9 +788,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@cloudflare/workers-types@4.20241011.0':
-    resolution: {integrity: sha512-emwBnuFB/2lS1z6NXAeBqrSL8Xwnr7YpgdLuchOmgu/igqBsLLNPBb4Qmgh3neFWUe9wbzQyx030836YF3c3Xw==}
-
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
     engines: {node: '>=12'}
@@ -1113,12 +1092,6 @@ packages:
       '@auth/core': 0.*
       hono: '>=3.*'
       react: '>=18'
-
-  '@hono/node-server@1.13.2':
-    resolution: {integrity: sha512-0w8nEmAyx0Ul0CQp8BL2VtAG4YVdpzXd/mvvM+l0G5Oq22pUyHS+KeFFPSY+czLOF5NAiV3MUNPD1n14Ol5svg==}
-    engines: {node: '>=18.14.1'}
-    peerDependencies:
-      hono: ^4
 
   '@iconify/json@2.2.260':
     resolution: {integrity: sha512-0vVJBAJ8GOoS07b8yC6c8NHfFx1GJnM8xtebtyynQYZ0/60dxKi86imdNftq5oY/cFfvVUGlmBi/2HS+sxWsWA==}
@@ -1446,7 +1419,7 @@ packages:
   '@nextui-org/shared-icons@2.0.9':
     resolution: {integrity: sha512-WG3yinVY7Tk9VqJgcdF4V8Ok9+fcm5ey7S1els7kujrfqLYxtqoKywgiY/7QHwZlfQkzpykAfy+NAlHkTP5hMg==}
     peerDependencies:
-      react: '>=18'
+      react: ^18.3.1
 
   '@nextui-org/shared-utils@2.0.8':
     resolution: {integrity: sha512-ZEtoMPXS+IjT8GvpJTS9IWDnT1JNCKV+NDqqgysAf1niJmOFLyJgl6dh/9n4ufcGf1GbSEQN+VhJasEw7ajYGQ==}
@@ -1550,7 +1523,7 @@ packages:
   '@nextui-org/use-aria-button@2.0.10':
     resolution: {integrity: sha512-tUpp4QMr1zugKPevyToeRHIufTuc/g+67/r/oQLRTG0mMo3yGVmggykQuYn22fqqZPpW6nHcB9VYc+XtZZ27TQ==}
     peerDependencies:
-      react: '>=18'
+      react: ^18.3.1
 
   '@nextui-org/use-aria-link@2.0.19':
     resolution: {integrity: sha512-ef61cJLlwcR4zBWiaeHZy4K18juFjUup2SslfLIAiZz3kVosBCGKmkJkw1SASYY8+D/oUc2B6BFIk25YEsRKRw==}
@@ -2834,6 +2807,9 @@ packages:
     resolution: {integrity: sha512-soW+gE9QTmMaqXM17r7y1p8NiQVIIECjdTaYla8BKL5Flj030m3KuxEQoiG1XgjtA0O7ayznFz2YvPcXIy3qDg==}
     engines: {node: '>=12'}
 
+  '@teidesu/deno-types@2.0.1':
+    resolution: {integrity: sha512-kSCsxF5aXetj044Cs33THH2PrP+ej1WRzVVnCyCL24trsh3P5B+sCNzPsKGptRb99ckxpDbZNIVLP5LG2pgmgQ==}
+
   '@thaunknown/thirty-two@1.0.5':
     resolution: {integrity: sha512-Q53KyCXweV1CS62EfqtPDqfpksn5keQ59PGqzzkK+g8Vif1jB4inoBCcs/BUSdsqddhE3G+2Fn+4RX3S6RqT0A==}
     engines: {node: '>=0.2.6'}
@@ -3181,10 +3157,6 @@ packages:
 
   dot-case@3.0.4:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
-
-  dotenv@16.4.5:
-    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
-    engines: {node: '>=12'}
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
@@ -3631,9 +3603,6 @@ packages:
   jsonpointer@5.0.1:
     resolution: {integrity: sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ==}
     engines: {node: '>=0.10.0'}
-
-  jssha@3.3.1:
-    resolution: {integrity: sha512-VCMZj12FCFMQYcFLPRm/0lOBbLi8uM2BhXPTqw3U4YAfs4AZfiApOoBLoN8cQE60Z50m1MYMTQVCfgF/KaCVhQ==}
 
   kolorist@1.8.0:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
@@ -4326,10 +4295,6 @@ packages:
 
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
-
-  undici@6.20.1:
-    resolution: {integrity: sha512-AjQF1QsmqfJys+LXfGTNum+qw4S88CojRInG/6t31W/1fk6G59s92bnAvGz5Cmur+kQv2SURXEvvudLmbrE8QA==}
-    engines: {node: '>=18.17'}
 
   unicode-canonical-property-names-ecmascript@2.0.1:
     resolution: {integrity: sha512-dA8WbNeb2a6oQzAQ55YlT5vQAWGV9WXOsi3SskE3bcCdM0P4SDd+24zS/OCacdRq5BkdsRj9q3Pg6YyQoxIGqg==}
@@ -5375,8 +5340,6 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.3':
     optional: true
 
-  '@cloudflare/workers-types@4.20241011.0': {}
-
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
 
@@ -5548,10 +5511,6 @@ snapshots:
       '@auth/core': 0.35.3
       hono: 4.6.5
       react: 18.3.1
-
-  '@hono/node-server@1.13.2(hono@4.6.5)':
-    dependencies:
-      hono: 4.6.5
 
   '@iconify/json@2.2.260':
     dependencies:
@@ -8458,6 +8417,8 @@ snapshots:
 
   '@tanstack/virtual-file-routes@1.64.0': {}
 
+  '@teidesu/deno-types@2.0.1': {}
+
   '@thaunknown/thirty-two@1.0.5':
     dependencies:
       uint8-util: 2.2.5
@@ -8824,8 +8785,6 @@ snapshots:
     dependencies:
       no-case: 3.0.4
       tslib: 2.8.0
-
-  dotenv@16.4.5: {}
 
   eastasianwidth@0.2.0: {}
 
@@ -9319,8 +9278,6 @@ snapshots:
       graceful-fs: 4.2.11
 
   jsonpointer@5.0.1: {}
-
-  jssha@3.3.1: {}
 
   kolorist@1.8.0: {}
 
@@ -10136,8 +10093,6 @@ snapshots:
       which-boxed-primitive: 1.0.2
 
   undici-types@6.19.8: {}
-
-  undici@6.20.1: {}
 
   unicode-canonical-property-names-ecmascript@2.0.1: {}
 

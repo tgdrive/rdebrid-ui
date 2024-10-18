@@ -1,4 +1,4 @@
-import { getAuthConfig } from "@/server/utils/auth-config";
+import { getAuthConfig } from "../utils/auth-config";
 import { initAuthConfig } from "@hono/auth-js";
 import { Hono } from "hono";
 

@@ -1,22 +1,16 @@
+import { serveStatic } from "hono/deno";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { env } from "hono/adapter";
 import { logger } from "hono/logger";
-import { serve } from "@hono/node-server";
-import { serveStatic } from "@hono/node-server/serve-static";
-import { config } from "dotenv";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import IndexRouter from "./routes";
-import { getProxyAgent } from "./utils/proxy-agent";
-import type { HonoBinding } from "@/types";
-import type { ProxyAgent } from "undici";
 
-config({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../.env") });
+import IndexRouter from "./routes";
+import type { HonoBinding } from "@/types";
+import { getProxyClient } from "./utils/proxy-deno";
 
 declare module "hono" {
   interface ContextVariableMap {
-    proxyAgent?: ProxyAgent;
+    client?: Deno.HttpClient;
   }
 }
 
@@ -40,10 +34,10 @@ app.use("/api/*", (c, next) => {
 });
 
 app.use("/api/btsearch/*", async (c, next) => {
-  const proxyAgent = getProxyAgent(c.env.PROXY_URL);
-  c.set("proxyAgent", proxyAgent);
+  const client = getProxyClient(c.env.PROXY_URL);
+  c.set("client", client);
   await next();
-  proxyAgent?.close();
+  client?.close();
 });
 
 app.route("/api", IndexRouter);
@@ -69,7 +63,4 @@ app
     }),
   );
 
-serve({
-  fetch: app.fetch,
-  port: process.env.PORT ? Number(process.env.PORT) : 8080,
-});
+Deno.serve({ port: Number(Deno.env.get("PORT")) || 8080, hostname: "0.0.0.0" }, app.fetch);

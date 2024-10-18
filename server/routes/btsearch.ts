@@ -88,9 +88,9 @@ router.get("/", verifyAuth(), async (c) => {
   const { q, page, orderBy, category } = result.output;
 
   try {
-    const fetchOptions = c.var.proxyAgent
+    const fetchOptions = c.var.client
       ? {
-          dispatcher: c.var.proxyAgent,
+          client: c.var.client,
         }
       : {};
     const reqPromises = [

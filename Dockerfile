@@ -9,10 +9,9 @@ RUN pnpm install --frozen-lockfile
 RUN pnpm run build:client
 RUN pnpm run build:server
 
-FROM ghcr.io/tgdrive/node
+FROM denoland/deno:distroless
 WORKDIR /app
 COPY --from=builder /app/build ./build
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-ENV NODE_ENV=production
 EXPOSE 8080
-ENTRYPOINT [ "node", "build/server/index.mjs" ]
+CMD [ "run","--allow-all","build/server/index.js" ]

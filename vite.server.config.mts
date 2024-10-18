@@ -1,15 +1,12 @@
 import { builtinModules } from "node:module";
-import path from "node:path";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
   build: {
     lib: {
-      entry: path.resolve(__dirname, "server/index.ts"),
+      entry: ["server/deno.ts"],
       formats: ["es"],
-      fileName: () => "index.mjs",
+      fileName: () => "index.js",
     },
     outDir: "build/server",
     copyPublicDir: false,
