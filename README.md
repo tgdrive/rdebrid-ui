@@ -10,6 +10,7 @@
 - **Torrent Availability Checking**: Check the availability of magnet before adding torrent.
 - Search torrent from `BTdig` index.
 - **Tor2Magnet**: Convert Torrent files to Magnet no need of any external tool.
+- Mobile Friendly UI
 
 ![demo](./demos/demo1.jpg)
 
