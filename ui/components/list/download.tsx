@@ -19,7 +19,7 @@ import { ListBox, ListBoxItem } from "react-aria-components";
 import clsx from "clsx";
 import { useShallow } from "zustand/shallow";
 import type { Selection } from "@nextui-org/react";
-import { useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 
 const DownloadDropdown = () => {
   const { open, cords } = useDebridStore((state) => state.dropdown);
@@ -29,18 +29,9 @@ const DownloadDropdown = () => {
 
   const mutation = useDeleteDebrid("downloads", [item.id]);
 
-  const navigate = useNavigate();
-
   const onAction = useCallback(
     async (key: Key) => {
-      if (key === "delete") {
-        mutation.mutate();
-      } else if (key === "play") {
-        navigate({
-          to: "/watch/$",
-          params: { _splat: item.download.replace("https://", "") },
-        });
-      }
+      if (key === "delete") mutation.mutate();
     },
     [mutation],
   );
@@ -63,22 +54,27 @@ const DownloadDropdown = () => {
         onAction={onAction}
         disabledKeys={[!item.streamable ? "play" : ""]}
       >
-        <DropdownItem
-          title="Original Link"
-          target="_blank"
-          rel="noopener noreferrer"
-          key="original"
-          href={item.link}
-          startContent={<Icons.ExternalLink />}
-        >
-          Original Link
+        <DropdownItem key="original" startContent={<Icons.ExternalLink />}>
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            className="no-underline block"
+            href={item.link}
+          >
+            Open Link
+          </a>
         </DropdownItem>
-        <DropdownItem title="Play" key="play" startContent={<Icons.Play />}>
-          Play
+        <DropdownItem key="play" startContent={<Icons.Play />}>
+          <Link
+            to="/watch/$"
+            params={{ _splat: item.download.replace("https://", "") }}
+            className="block"
+          >
+            Play
+          </Link>
         </DropdownItem>
         <DropdownItem
-          title="Download"
-          rel="noopener noreferrer"
+          download
           href={item.download}
           key="download"
           startContent={<Icons.Download />}

@@ -15,7 +15,7 @@ import {
   debridAvailabilityOptions,
   debridTorrentQueryOptions,
 } from "@/ui/utils/queryOptions";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { paginationItemClass, scrollClasses } from "@/ui/utils/classes";
 import { Icons } from "@/ui/utils/icons";
 import { copyDataToClipboard, formattedLongDate } from "@/ui/utils/common";
@@ -116,28 +116,28 @@ const ControlDropdown = () => {
         <DropdownItem key="availability" startContent={<Icons.CheckZoom />}>
           Check Availability
         </DropdownItem>
-        <DropdownItem
-          as={"a"}
-          target="_blank"
-          rel="noopener noreferrer"
-          href={item?.magnet}
-          key="magnet"
-          startContent={<Icons.TorrentOutline />}
-        >
-          Open Magnet
-        </DropdownItem>
         <DropdownItem key="copy" startContent={<Icons.Copy />}>
           Copy Magnet
         </DropdownItem>
-        <DropdownItem
-          as={"a"}
-          target="_blank"
-          rel="noopener noreferrer"
-          href={item?.link}
-          key="link"
-          startContent={<Icons.ExternalLink />}
-        >
-          Open Link
+        <DropdownItem key="magnet" startContent={<Icons.TorrentOutline />}>
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            className="no-underline block"
+            href={item?.magnet}
+          >
+            Open Magnet
+          </a>
+        </DropdownItem>
+        <DropdownItem key="link" startContent={<Icons.ExternalLink />}>
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            className="no-underline block"
+            href={item?.link}
+          >
+            Open Link
+          </a>
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

@@ -20,7 +20,7 @@ import clsx from "clsx";
 import { useShallow } from "zustand/shallow";
 import type { Selection } from "@nextui-org/react";
 import toast from "react-hot-toast";
-import { useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 
 const TorrentDropdown = () => {
   const { open, cords, item, actions } = useDebridStore(
@@ -35,8 +35,6 @@ const TorrentDropdown = () => {
   const modalActions = useSelectModalStore((state) => state.actions);
 
   const mutation = useDeleteDebrid("torrents", [item.id]);
-
-  const navigate = useNavigate();
 
   const onAction = useCallback(
     async (key: Key) => {
@@ -58,12 +56,6 @@ const TorrentDropdown = () => {
       } else if (key === "view") {
         modalActions.setCurrentItem(item);
         modalActions.setOpen(true);
-      } else if (key === "unrestict") {
-        navigate({
-          to: "/downloader/$tabId",
-          search: { fileId: item.id },
-          params: { tabId: "links" },
-        });
       }
     },
     [mutation],
@@ -86,17 +78,20 @@ const TorrentDropdown = () => {
         }}
         onAction={onAction}
       >
-        <DropdownItem title="View Files" key="view" startContent={<Icons.Eye />}>
+        <DropdownItem key="view" startContent={<Icons.Eye />}>
           View Files
         </DropdownItem>
-        <DropdownItem
-          title="Unrestict Links"
-          key="unrestict"
-          startContent={<Icons.DownloadDashed />}
-        >
-          Unrestict Links
+        <DropdownItem key="unrestict" startContent={<Icons.DownloadDashed />}>
+          <Link
+            to="/downloader/$tabId"
+            search={{ fileId: item.id }}
+            params={{ tabId: "links" }}
+            className="block"
+          >
+            Unrestict Links
+          </Link>
         </DropdownItem>
-        <DropdownItem title="Copy Links" download key="copy" startContent={<Icons.Copy />}>
+        <DropdownItem key="copy" startContent={<Icons.Copy />}>
           Copy Links
         </DropdownItem>
         <DropdownItem key="delete" startContent={<Icons.Delete />}>
