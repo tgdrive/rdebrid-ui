@@ -20,7 +20,7 @@ import clsx from "clsx";
 import { useShallow } from "zustand/shallow";
 import type { Selection } from "@nextui-org/react";
 import toast from "react-hot-toast";
-import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 
 const TorrentDropdown = () => {
   const { open, cords, item, actions } = useDebridStore(
@@ -35,6 +35,8 @@ const TorrentDropdown = () => {
   const modalActions = useSelectModalStore((state) => state.actions);
 
   const mutation = useDeleteDebrid("torrents", [item.id]);
+
+  const navigate = useNavigate();
 
   const onAction = useCallback(
     async (key: Key) => {
@@ -56,6 +58,12 @@ const TorrentDropdown = () => {
       } else if (key === "view") {
         modalActions.setCurrentItem(item);
         modalActions.setOpen(true);
+      } else if (key === "unrestict") {
+        navigate({
+          to: "/downloader/$tabId",
+          search: { fileId: item.id },
+          params: { tabId: "links" },
+        });
       }
     },
     [mutation],
@@ -82,14 +90,7 @@ const TorrentDropdown = () => {
           View Files
         </DropdownItem>
         <DropdownItem key="unrestict" startContent={<Icons.DownloadDashed />}>
-          <Link
-            to="/downloader/$tabId"
-            search={{ fileId: item.id }}
-            params={{ tabId: "links" }}
-            className="block"
-          >
-            Unrestict Links
-          </Link>
+          Unrestict Links
         </DropdownItem>
         <DropdownItem key="copy" startContent={<Icons.Copy />}>
           Copy Links

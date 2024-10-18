@@ -18,7 +18,7 @@ import {
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { paginationItemClass, scrollClasses } from "@/ui/utils/classes";
 import { Icons } from "@/ui/utils/icons";
-import { copyDataToClipboard, formattedLongDate } from "@/ui/utils/common";
+import { copyDataToClipboard, formattedLongDate, navigateToExternalUrl } from "@/ui/utils/common";
 import clsx from "clsx";
 import { useDebridStore, useSelectModalStore } from "@/ui/utils/store";
 import { getQueryClient } from "@/ui/utils/queryClient";
@@ -88,7 +88,8 @@ const ControlDropdown = () => {
             },
           },
         );
-      }
+      } else if (key === "link") navigateToExternalUrl(item.link);
+      else if (key === "magnet") navigateToExternalUrl(item.magnet);
     },
     [item?.magnet],
   );
@@ -111,14 +112,7 @@ const ControlDropdown = () => {
         onAction={onAction}
       >
         <DropdownItem key="link" startContent={<Icons.ExternalLink />}>
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            className="no-underline block"
-            href={item?.link}
-          >
-            Open Link
-          </a>
+          Open Link
         </DropdownItem>
         <DropdownItem key="add" startContent={<Icons.CirclePlus />}>
           Add Torrent
@@ -130,14 +124,7 @@ const ControlDropdown = () => {
           Copy Magnet
         </DropdownItem>
         <DropdownItem key="magnet" startContent={<Icons.TorrentOutline />}>
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            className="no-underline block"
-            href={item?.magnet}
-          >
-            Open Magnet
-          </a>
+          Open Magnet
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

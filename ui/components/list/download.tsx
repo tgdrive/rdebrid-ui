@@ -1,7 +1,7 @@
 import type React from "react";
 import { type Key, useCallback } from "react";
 import type { DebridUnlock, SetValue } from "@/types";
-import { formattedLongDate, size2round } from "@/ui/utils/common";
+import { formattedLongDate, navigateToExternalUrl, size2round } from "@/ui/utils/common";
 import { useDeleteDebrid } from "@/ui/utils/queryOptions";
 import {
   Button,
@@ -19,26 +19,32 @@ import { ListBox, ListBoxItem } from "react-aria-components";
 import clsx from "clsx";
 import { useShallow } from "zustand/shallow";
 import type { Selection } from "@nextui-org/react";
-import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 
 const DownloadDropdown = () => {
   const { open, cords } = useDebridStore((state) => state.dropdown);
-  const { closeDropdown } = useDebridStore((state) => state.actions);
+  const actions = useDebridStore((state) => state.actions);
 
   const item = useDebridStore((state) => state.currentDebridItem) as DebridUnlock;
 
   const mutation = useDeleteDebrid("downloads", [item.id]);
 
+  const navigate = useNavigate();
+
   const onAction = useCallback(
-    async (key: Key) => {
+    (key: Key) => {
       if (key === "delete") mutation.mutate();
+      else if (key === "original") navigateToExternalUrl(item.link);
+      else if (key === "play")
+        navigate({ to: "/watch/$", params: { _splat: item.download.replace("https://", "") } });
+      else if (key === "download") navigateToExternalUrl(item.download, false);
     },
     [mutation],
   );
   return (
     <Dropdown
       isOpen={open}
-      onOpenChange={closeDropdown}
+      onOpenChange={actions.closeDropdown}
       classNames={{
         content: "!bg-radial-1 bg-background",
       }}
@@ -55,28 +61,13 @@ const DownloadDropdown = () => {
         disabledKeys={[!item.streamable ? "play" : ""]}
       >
         <DropdownItem key="original" startContent={<Icons.ExternalLink />}>
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            className="no-underline block"
-            href={item.link}
-          >
-            Open Link
-          </a>
+          Open Link
         </DropdownItem>
         <DropdownItem key="play" startContent={<Icons.Play />}>
-          <Link
-            to="/watch/$"
-            params={{ _splat: item.download.replace("https://", "") }}
-            className="block"
-          >
-            Play
-          </Link>
+          Play
         </DropdownItem>
         <DropdownItem key="download" startContent={<Icons.Download />}>
-          <a rel="noopener noreferrer" className="no-underline block" href={item.download}>
-            Download
-          </a>
+          Download
         </DropdownItem>
         <DropdownItem key="delete" startContent={<Icons.Delete />}>
           Delete

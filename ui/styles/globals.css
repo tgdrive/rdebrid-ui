@@ -17,3 +17,14 @@
 input[type="search"]::-webkit-search-cancel-button {
   display: none;
 }
+
+@media (pointer: coarse) {
+  *::-webkit-scrollbar {
+    display: none;
+  }
+
+  * {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

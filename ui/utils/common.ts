@@ -17,6 +17,11 @@ export const copyDataToClipboard = (text: string) => {
   });
 };
 
+export const navigateToExternalUrl = (url: string, shouldOpenNewTab = true) => {
+  if (shouldOpenNewTab) window.open(url, "_blank");
+  else window.location.href = url;
+};
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

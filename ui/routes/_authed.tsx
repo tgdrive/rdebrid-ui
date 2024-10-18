@@ -38,7 +38,7 @@ function AuthenticatedLayout() {
         <SideNav />
         <main
           className={clsx(
-            "absolute left-0 right-0 md:bottom-0 md:left-20 bottom-20 top-20 max-w-screen-xl mx-auto",
+            "absolute left-0 right-0 md:bottom-0 md:left-20 bottom-20 top-20 max-w-screen-xl mx-auto overflow-y-auto",
             scrollClasses,
           )}
         >
