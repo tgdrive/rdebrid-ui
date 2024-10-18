@@ -38,6 +38,7 @@ export const siteConfig = {
       id: "btsearch",
       label: "Search",
       path: "/btsearch",
+      search: {},
       icon: Icons.Search,
       activeIcon: Icons.SearchFilled,
     },

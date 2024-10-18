@@ -15,7 +15,7 @@ export const SideNav = () => {
           className="flex items-center justify-center flex-col gap-1 size-14 hover:bg-white/5 rounded-lg group"
           key={item.id}
           to={item.path}
-          search={item.search as any}
+          search={item.search}
           preload="intent"
         >
           {({ isActive }) => {

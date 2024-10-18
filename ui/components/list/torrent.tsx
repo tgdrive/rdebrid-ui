@@ -169,7 +169,9 @@ export function TorrentList({ items, selectedIds, setSelectedIds, selectMode }: 
                       {item.status === "downloading" && <Icons.AnimatedDownload />}
 
                       {item.status === "uploading" && <Icons.AnimatedUpload />}
-                      {item.status === "downloaded" && <Icons.Check className="text-success" />}
+                      {item.status === "downloaded" && (
+                        <Icons.CheckCircle className="text-success" />
+                      )}
                       {item.status === "error" && <Icons.Exclamation className="text-danger" />}
                       {item.status === "waiting_files_selection" && <Icons.SelectWait />}
                       <div className="flex flex-col items-center gap-0.5">
@@ -191,7 +193,7 @@ export function TorrentList({ items, selectedIds, setSelectedIds, selectMode }: 
                           base: "m-0",
                           wrapper: "before:rounded-full after:rounded-full mr-0",
                         }}
-                        icon={<Icons.Check />}
+                        icon={<Icons.CheckCircle />}
                       />
                     ) : (
                       <Button

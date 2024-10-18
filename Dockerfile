@@ -1,4 +1,5 @@
-FROM node:alpine AS build
+FROM node:alpine AS builder
+RUN apk add --no-cache ca-certificates && update-ca-certificates
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
@@ -10,7 +11,8 @@ RUN pnpm run build:server
 
 FROM ghcr.io/tgdrive/node
 WORKDIR /app
-COPY --from=build /app/build ./build
+COPY --from=builder /app/build ./build
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 ENV NODE_ENV=production
 EXPOSE 8080
 ENTRYPOINT [ "node", "build/server/index.mjs" ]

@@ -88,6 +88,11 @@ router.get("/", verifyAuth(), async (c) => {
   const { q, page, orderBy, category } = result.output;
 
   try {
+    const fetchOptions = c.var.proxyAgent
+      ? {
+          dispatcher: c.var.proxyAgent,
+        }
+      : {};
     const reqPromises = [
       axios.get("https://bt4gprx.com/search", {
         params: {
@@ -97,6 +102,8 @@ router.get("/", verifyAuth(), async (c) => {
           category,
           page: "rss",
         },
+        //@ts-ignore
+        fetchOptions,
       }),
       axios.get("https://bt4gprx.com/search", {
         params: {
@@ -104,6 +111,8 @@ router.get("/", verifyAuth(), async (c) => {
           category,
           orderby: orderBy,
         },
+        //@ts-ignore
+        fetchOptions,
       }),
     ];
     const responses = await Promise.all(reqPromises);

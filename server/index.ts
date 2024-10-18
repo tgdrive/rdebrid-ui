@@ -1,11 +1,46 @@
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { env } from "hono/adapter";
+import { logger } from "hono/logger";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
-import app from "@/server/app";
 import { config } from "dotenv";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import IndexRouter from "./routes";
+import { getProxyAgent } from "./utils/proxy-agent";
+import type { HonoBinding } from "@/types";
+import type { ProxyAgent } from "undici";
 
 config({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../.env") });
+
+declare module "hono" {
+  interface ContextVariableMap {
+    proxyAgent: ProxyAgent | null;
+  }
+}
+
+const app = new Hono<HonoBinding>({ strict: false }).basePath("/");
+
+app.use(logger());
+
+app.use(
+  "/api/*",
+  cors({
+    origin: "*",
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowHeaders: ["*"],
+    maxAge: 86400,
+  }),
+);
+
+app.use("/api/*", (c, next) => {
+  c.env = env(c);
+  c.set("proxyAgent", getProxyAgent(c.env.PROXY_URL));
+  return next();
+});
+
+app.route("/api", IndexRouter);
 
 app
   .use("*", async (c, next) => {

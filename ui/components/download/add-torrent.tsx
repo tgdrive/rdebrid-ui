@@ -156,7 +156,7 @@ export const AddTorrent = () => {
         {isFetched ? (
           data?.avaliabilities && data.avaliabilities.length > 0 ? (
             <span className="inline-flex items-center gap-2">
-              <Icons.Check className="text-success" />
+              <Icons.CheckCircle className="text-success" />
               <p className="text-sm">Avaliable</p>
             </span>
           ) : (

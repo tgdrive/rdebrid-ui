@@ -66,8 +66,8 @@ importers:
         specifier: ^4.5.0
         version: 4.5.0
       feaxios:
-        specifier: ^0.0.22
-        version: 0.0.22
+        specifier: ^0.0.23
+        version: 0.0.23
       filesize:
         specifier: ^10.1.6
         version: 10.1.6
@@ -113,6 +113,9 @@ importers:
       uint8-util:
         specifier: ^2.2.5
         version: 2.2.5
+      undici:
+        specifier: ^6.20.1
+        version: 6.20.1
       usehooks-ts:
         specifier: ^3.1.0
         version: 3.1.0(react@18.3.1)
@@ -1443,7 +1446,7 @@ packages:
   '@nextui-org/shared-icons@2.0.9':
     resolution: {integrity: sha512-WG3yinVY7Tk9VqJgcdF4V8Ok9+fcm5ey7S1els7kujrfqLYxtqoKywgiY/7QHwZlfQkzpykAfy+NAlHkTP5hMg==}
     peerDependencies:
-      react: ^18.3.1
+      react: '>=18'
 
   '@nextui-org/shared-utils@2.0.8':
     resolution: {integrity: sha512-ZEtoMPXS+IjT8GvpJTS9IWDnT1JNCKV+NDqqgysAf1niJmOFLyJgl6dh/9n4ufcGf1GbSEQN+VhJasEw7ajYGQ==}
@@ -1547,7 +1550,7 @@ packages:
   '@nextui-org/use-aria-button@2.0.10':
     resolution: {integrity: sha512-tUpp4QMr1zugKPevyToeRHIufTuc/g+67/r/oQLRTG0mMo3yGVmggykQuYn22fqqZPpW6nHcB9VYc+XtZZ27TQ==}
     peerDependencies:
-      react: ^18.3.1
+      react: '>=18'
 
   '@nextui-org/use-aria-link@2.0.19':
     resolution: {integrity: sha512-ef61cJLlwcR4zBWiaeHZy4K18juFjUup2SslfLIAiZz3kVosBCGKmkJkw1SASYY8+D/oUc2B6BFIk25YEsRKRw==}
@@ -3287,8 +3290,8 @@ packages:
       picomatch:
         optional: true
 
-  feaxios@0.0.22:
-    resolution: {integrity: sha512-FpsbFiUGbf314U29CoD7hT+q8BGQ+M/LorwShAB8dTEGyQAafL2yDXNWx4IKIBv/mSgOXioWGKmoTBrd1hqmnQ==}
+  feaxios@0.0.23:
+    resolution: {integrity: sha512-eghR0A21fvbkcQBgZuMfQhrXxJzC0GNUGC9fXhBge33D+mFDTwl0aJ35zoQQn575BhyjQitRc5N4f+L4cP708g==}
 
   filelist@1.0.4:
     resolution: {integrity: sha512-w1cEuf3S+DrLCQL7ET6kz+gmlJdbq9J7yXCSjK/OZCPA+qEN1WyF4ZAf0YYJa4/shHJra2t/d/r8SV4Ji+x+8Q==}
@@ -4323,6 +4326,10 @@ packages:
 
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
+  undici@6.20.1:
+    resolution: {integrity: sha512-AjQF1QsmqfJys+LXfGTNum+qw4S88CojRInG/6t31W/1fk6G59s92bnAvGz5Cmur+kQv2SURXEvvudLmbrE8QA==}
+    engines: {node: '>=18.17'}
 
   unicode-canonical-property-names-ecmascript@2.0.1:
     resolution: {integrity: sha512-dA8WbNeb2a6oQzAQ55YlT5vQAWGV9WXOsi3SskE3bcCdM0P4SDd+24zS/OCacdRq5BkdsRj9q3Pg6YyQoxIGqg==}
@@ -8998,7 +9005,7 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.2
 
-  feaxios@0.0.22:
+  feaxios@0.0.23:
     dependencies:
       is-retry-allowed: 3.0.0
 
@@ -10129,6 +10136,8 @@ snapshots:
       which-boxed-primitive: 1.0.2
 
   undici-types@6.19.8: {}
+
+  undici@6.20.1: {}
 
   unicode-canonical-property-names-ecmascript@2.0.1: {}
 

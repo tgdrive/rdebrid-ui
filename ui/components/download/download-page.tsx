@@ -64,7 +64,7 @@ export const UnlockListItem = memo(({ item }: DownloadListItemProps) => {
               </Button>
             </Tooltip>
           ) : (
-            <Icons.Check className="text-success" />
+            <Icons.CheckCircle className="text-success" />
           )}
         </div>
         <Button

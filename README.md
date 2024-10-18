@@ -72,7 +72,8 @@ The application requires the following environment variables:
 | `AUTH_REAL_DEBRID_SECRET`  | OAUTH SECRET for Real-Debrid authentication.   
 | `FORWARD_IP`  | Forward Debrid IP.
 | `DEBRID_TOKEN`  | Use Personal Debrid Token instead of Oauth Token which has limited scopes permissions .
-| `PORT`  | Change Default 8080 Server Port. 
+| `PORT`  | Change Default 8080 Server Port.
+| `PROXY_URL`  | Use proxy for `BTdig` indexer if its blocked in your region(only works on docker or local deployment).
 
 **You can generate `AUTH_SECRET` from [here](https://generate-secret.vercel.app/64).**
 

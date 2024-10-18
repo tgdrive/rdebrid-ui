@@ -35,7 +35,7 @@ export default function RealDebrid<P extends RealDebridProfile>(
             Authorization: `Bearer ${tokens.access_token}`,
             "User-Agent": "authjs",
           },
-        }).then(async (res) => await res.json<RealDebridProfile>());
+        }).then(async (res) => await res.json());
 
         return profile;
       },

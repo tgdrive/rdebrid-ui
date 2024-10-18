@@ -4,6 +4,7 @@ export type HonoBinding = {
   Bindings: {
     DEBRID_TOKEN: string;
     FORWARD_IP: string;
+    PROXY_URL: string;
   };
 };
 

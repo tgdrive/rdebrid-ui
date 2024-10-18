@@ -1,3 +1,4 @@
+//@ts-nocheck
 import bencode from "bencode";
 import magnet, { encode } from "magnet-uri";
 import { hash, arr2hex, text2arr, arr2text } from "uint8-util";
