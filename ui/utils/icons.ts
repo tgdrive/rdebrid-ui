@@ -35,6 +35,9 @@ import TablerDots from "~icons/tabler/dots";
 import TablerCategory from "~icons/tabler/category";
 import IcRoundSort from "~icons/ic/round-sort";
 import IcRoundRefresh from "~icons/ic/round-refresh";
+import TablerCirclePlusFilled from "~icons/tabler/circle-plus-filled";
+import TablerCirclePlus from "~icons/tabler/circle-plus";
+import TablerZoomCheck from "~icons/tabler/zoom-check";
 
 export const Icons = {
   HomeOutline: TablerHome,
@@ -55,7 +58,7 @@ export const Icons = {
   SelectMode: TablerSelect,
   ChevronRightCircle: TablerCircleChevronRight,
   ChevronRight: TablerChevronRight,
-  Check: TablerCircleCheckFilled,
+  CheckCircle: TablerCircleCheckFilled,
   Exclamation: TablerExclamationCircleFilled,
   AnimatedUpload: LineMdDownloadingLoop,
   AnimatedDownload: LineMdDownloadingLoop,
@@ -75,4 +78,7 @@ export const Icons = {
   Catergory: TablerCategory,
   Sort: IcRoundSort,
   Refresh: IcRoundRefresh,
+  CirclePlusFilled: TablerCirclePlusFilled,
+  CirclePlus: TablerCirclePlus,
+  CheckZoom: TablerZoomCheck,
 };

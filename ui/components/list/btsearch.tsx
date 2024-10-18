@@ -110,24 +110,32 @@ const ControlDropdown = () => {
         }}
         onAction={onAction}
       >
-        <DropdownItem key="add">Add Torrent</DropdownItem>
-        <DropdownItem key="availability">Check Availability</DropdownItem>
+        <DropdownItem key="add" startContent={<Icons.CirclePlus />}>
+          Add Torrent
+        </DropdownItem>
+        <DropdownItem key="availability" startContent={<Icons.CheckZoom />}>
+          Check Availability
+        </DropdownItem>
         <DropdownItem
           as={"a"}
           target="_blank"
           rel="noopener noreferrer"
           href={item?.magnet}
           key="magnet"
+          startContent={<Icons.TorrentOutline />}
         >
           Open Magnet
         </DropdownItem>
-        <DropdownItem key="copy">Copy Magnet</DropdownItem>
+        <DropdownItem key="copy" startContent={<Icons.Copy />}>
+          Copy Magnet
+        </DropdownItem>
         <DropdownItem
           as={"a"}
           target="_blank"
           rel="noopener noreferrer"
           href={item?.link}
           key="link"
+          startContent={<Icons.ExternalLink />}
         >
           Open Link
         </DropdownItem>
@@ -228,7 +236,7 @@ export function BtSearchList() {
                       onClick={(e) => onDropDownOpen(e, item)}
                       className="data-[hover=true]:bg-transparent"
                     >
-                      <Icons.DotsVertical />
+                      <Icons.Dots />
                     </Button>
                   </div>
 

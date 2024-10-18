@@ -61,6 +61,7 @@ const DownloadDropdown = () => {
           base: ["data-[hover=true]:bg-white/5", "data-[selectable=true]:focus:bg-white/5"],
         }}
         onAction={onAction}
+        disabledKeys={[!item.streamable ? "play" : ""]}
       >
         <DropdownItem
           title="Original Link"
@@ -77,7 +78,7 @@ const DownloadDropdown = () => {
         </DropdownItem>
         <DropdownItem
           title="Download"
-          download
+          rel="noopener noreferrer"
           href={item.download}
           key="download"
           startContent={<Icons.Download />}
@@ -166,7 +167,7 @@ export function DowloadList({ items, selectedIds, setSelectedIds, selectMode }: 
                           base: "m-0",
                           wrapper: "before:rounded-full after:rounded-full mr-0",
                         }}
-                        icon={<Icons.Check />}
+                        icon={<Icons.CheckCircle />}
                       />
                     ) : (
                       <Button
