@@ -3,12 +3,5 @@
   "editor.formatOnSave": true,
   "editor.formatOnPaste": false,
   "typescript.tsdk": "node_modules\\typescript\\lib",
-  "tailwindCSS.experimental.classRegex": [
-    ["tv\\((([^()]*|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-    [
-      "extendVariants\\((([^()]*|\\([^()]*\\))*)\\)",
-      "[\"'`]([^\"'`]*).*?[\"'`]"
-    ]
-  ],
   "tailwindCSS.classAttributes": ["class", "className", "classNames"]
 }

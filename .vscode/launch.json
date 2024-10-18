@@ -1,15 +1,22 @@
 {
+  "version": "0.2.0",
   "configurations": [
     {
-      "name": "Wrangler",
+      "name": "Deno",
       "type": "node",
-      "request": "attach",
-      "port": 9229,
-      "cwd": "/",
-      "resolveSourceMapLocations": null,
-      "attachExistingChildren": false,
-      "autoAttachChildProcesses": false,
-      "sourceMaps": true
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "deno",
+      "attachSimplePort": 9229,
+      "outputCapture": "std",
+      "runtimeArgs": [
+        "run",
+        "--inspect-brk",
+        "--unstable-sloppy-imports",
+        "-A",
+        "--env=.env",
+        "server/deno.ts"
+      ]
     }
   ]
 }

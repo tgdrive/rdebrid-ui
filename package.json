@@ -3,10 +3,9 @@
   "version": "0.0.2",
   "private": true,
   "scripts": {
-    "vite:client": "vite",
+    "client": "vite",
+    "server": "deno run --allow-all --unstable-sloppy-imports --env=.env server/deno.ts",
     "typecheck": "tsc --noEmit",
-    "vite:server": "node build/server/index.mjs",
-    "server": "bun --watch server/bun.ts",
     "build:client": "vite build",
     "build:server": "vite build -c vite.server.config.mts",
     "update": "pnpm up --latest"
