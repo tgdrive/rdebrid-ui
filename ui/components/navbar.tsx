@@ -34,10 +34,7 @@ const Profile = ({ session: { user } }: { session: Session }) => {
           <p className="font-semibold">Signed in as</p>
           <p className="font-semibold">{user?.name}</p>
         </DropdownItem>
-        <DropdownItem
-          key="logout"
-          onPress={() => signOut({ callbackUrl: `${window.location.origin}/login` })}
-        >
+        <DropdownItem key="logout" onPress={() => signOut({ callbackUrl: "/login" })}>
           Log Out
         </DropdownItem>
       </DropdownMenu>

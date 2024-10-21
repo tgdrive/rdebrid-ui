@@ -20,6 +20,7 @@ import { Route as AuthedDownloaderImport } from "./routes/_authed/downloader"
 import { Route as AuthedBtsearchImport } from "./routes/_authed/btsearch"
 import { Route as AuthLoginImport } from "./routes/_auth.login"
 import { Route as AuthedDownloaderTabIdImport } from "./routes/_authed/downloader.$tabId"
+import { Route as AuthedAuthSuccessImport } from "./routes/_authed/auth.success"
 
 // Create/Update Routes
 
@@ -34,38 +35,51 @@ const AuthRoute = AuthImport.update({
 } as any)
 
 const AuthedIndexRoute = AuthedIndexImport.update({
+  id: "/",
   path: "/",
   getParentRoute: () => AuthedRoute,
 } as any)
 
 const WatchSplatRoute = WatchSplatImport.update({
+  id: "/watch/$",
   path: "/watch/$",
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import("./routes/watch.$.lazy").then((d) => d.Route))
 
 const AuthedViewRoute = AuthedViewImport.update({
+  id: "/view",
   path: "/view",
   getParentRoute: () => AuthedRoute,
 } as any)
 
 const AuthedDownloaderRoute = AuthedDownloaderImport.update({
+  id: "/downloader",
   path: "/downloader",
   getParentRoute: () => AuthedRoute,
 } as any)
 
 const AuthedBtsearchRoute = AuthedBtsearchImport.update({
+  id: "/btsearch",
   path: "/btsearch",
   getParentRoute: () => AuthedRoute,
 } as any)
 
 const AuthLoginRoute = AuthLoginImport.update({
+  id: "/login",
   path: "/login",
   getParentRoute: () => AuthRoute,
 } as any)
 
 const AuthedDownloaderTabIdRoute = AuthedDownloaderTabIdImport.update({
+  id: "/$tabId",
   path: "/$tabId",
   getParentRoute: () => AuthedDownloaderRoute,
+} as any)
+
+const AuthedAuthSuccessRoute = AuthedAuthSuccessImport.update({
+  id: "/auth/success",
+  path: "/auth/success",
+  getParentRoute: () => AuthedRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -128,6 +142,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthedIndexImport
       parentRoute: typeof AuthedImport
     }
+    "/_authed/auth/success": {
+      id: "/_authed/auth/success"
+      path: "/auth/success"
+      fullPath: "/auth/success"
+      preLoaderRoute: typeof AuthedAuthSuccessImport
+      parentRoute: typeof AuthedImport
+    }
     "/_authed/downloader/$tabId": {
       id: "/_authed/downloader/$tabId"
       path: "/$tabId"
@@ -166,6 +187,7 @@ interface AuthedRouteChildren {
   AuthedDownloaderRoute: typeof AuthedDownloaderRouteWithChildren
   AuthedViewRoute: typeof AuthedViewRoute
   AuthedIndexRoute: typeof AuthedIndexRoute
+  AuthedAuthSuccessRoute: typeof AuthedAuthSuccessRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
@@ -173,6 +195,7 @@ const AuthedRouteChildren: AuthedRouteChildren = {
   AuthedDownloaderRoute: AuthedDownloaderRouteWithChildren,
   AuthedViewRoute: AuthedViewRoute,
   AuthedIndexRoute: AuthedIndexRoute,
+  AuthedAuthSuccessRoute: AuthedAuthSuccessRoute,
 }
 
 const AuthedRouteWithChildren =
@@ -186,6 +209,7 @@ export interface FileRoutesByFullPath {
   "/view": typeof AuthedViewRoute
   "/watch/$": typeof WatchSplatRoute
   "/": typeof AuthedIndexRoute
+  "/auth/success": typeof AuthedAuthSuccessRoute
   "/downloader/$tabId": typeof AuthedDownloaderTabIdRoute
 }
 
@@ -197,6 +221,7 @@ export interface FileRoutesByTo {
   "/view": typeof AuthedViewRoute
   "/watch/$": typeof WatchSplatRoute
   "/": typeof AuthedIndexRoute
+  "/auth/success": typeof AuthedAuthSuccessRoute
   "/downloader/$tabId": typeof AuthedDownloaderTabIdRoute
 }
 
@@ -210,6 +235,7 @@ export interface FileRoutesById {
   "/_authed/view": typeof AuthedViewRoute
   "/watch/$": typeof WatchSplatRoute
   "/_authed/": typeof AuthedIndexRoute
+  "/_authed/auth/success": typeof AuthedAuthSuccessRoute
   "/_authed/downloader/$tabId": typeof AuthedDownloaderTabIdRoute
 }
 
@@ -223,6 +249,7 @@ export interface FileRouteTypes {
     | "/view"
     | "/watch/$"
     | "/"
+    | "/auth/success"
     | "/downloader/$tabId"
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -233,6 +260,7 @@ export interface FileRouteTypes {
     | "/view"
     | "/watch/$"
     | "/"
+    | "/auth/success"
     | "/downloader/$tabId"
   id:
     | "__root__"
@@ -244,6 +272,7 @@ export interface FileRouteTypes {
     | "/_authed/view"
     | "/watch/$"
     | "/_authed/"
+    | "/_authed/auth/success"
     | "/_authed/downloader/$tabId"
   fileRoutesById: FileRoutesById
 }
@@ -289,7 +318,8 @@ export const routeTree = rootRoute
         "/_authed/btsearch",
         "/_authed/downloader",
         "/_authed/view",
-        "/_authed/"
+        "/_authed/",
+        "/_authed/auth/success"
       ]
     },
     "/_auth/login": {
@@ -316,6 +346,10 @@ export const routeTree = rootRoute
     },
     "/_authed/": {
       "filePath": "_authed/index.tsx",
+      "parent": "/_authed"
+    },
+    "/_authed/auth/success": {
+      "filePath": "_authed/auth.success.tsx",
       "parent": "/_authed"
     },
     "/_authed/downloader/$tabId": {

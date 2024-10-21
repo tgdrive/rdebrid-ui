@@ -1,7 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { signIn } from "@hono/auth-js/react";
 import { Button, Link } from "@nextui-org/react";
-import { createFileRoute, useSearch } from "@tanstack/react-router";
+import { createFileRoute, useRouter, useSearch } from "@tanstack/react-router";
 import { loginQuery } from "@/ui/utils/schema";
 import { buttonClasses } from "@/ui/utils/classes";
 import clsx from "clsx";
@@ -9,8 +8,10 @@ import http from "@/ui/utils/http";
 import type { DebridCredentials, OauthData } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { Icons } from "@/ui/utils/icons";
-import { CopyButton } from "../components/copy-button";
+import { CopyButton } from "@/ui/components/copy-button";
 import { valibotSearchValidator } from "@tanstack/router-valibot-adapter";
+import { useOauthPopupLogin } from "@/ui/hooks/use-oauth-popup";
+import { sessionQueryOptions } from "@/ui/utils/queryOptions";
 
 const DebridClientId = "X245A4XAIBGVM";
 
@@ -60,9 +61,19 @@ export const Logincomponent = memo(() => {
     if (data?.client_id) setStartOnBoarding(false);
   }, [data?.client_id]);
 
-  const handleLogin = useCallback(() => {
-    signIn("real-debrid", { callbackUrl: `${window.location.origin}${params.redirect ?? "/"}` });
-  }, [params.redirect]);
+  const { popUpSignin, status } = useOauthPopupLogin("real-debrid", {
+    callbackUrl: "/auth/success",
+  });
+
+  const router = useRouter();
+
+  const { refetch } = useQuery(sessionQueryOptions);
+
+  useEffect(() => {
+    if (status === "success") {
+      refetch().then(() => router.history.replace(params.redirect ?? "/"));
+    }
+  }, [status, params.redirect]);
 
   return (
     <div className="pt-16">
@@ -72,7 +83,7 @@ export const Logincomponent = memo(() => {
           "relative bg-radial-1 bg-background rounded-lg shadow-md p-4",
         )}
       >
-        <Button fullWidth onPress={handleLogin} className={buttonClasses}>
+        <Button fullWidth onPress={popUpSignin} className={buttonClasses}>
           Sign In
         </Button>
         <Button
