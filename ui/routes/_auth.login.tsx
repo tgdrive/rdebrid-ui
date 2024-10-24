@@ -10,8 +10,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Icons } from "@/ui/utils/icons";
 import { CopyButton } from "@/ui/components/copy-button";
 import { valibotSearchValidator } from "@tanstack/router-valibot-adapter";
-import { useOauthPopupLogin } from "@/ui/hooks/use-oauth-popup";
 import { sessionQueryOptions } from "@/ui/utils/queryOptions";
+import { useOauthPopupLogin } from "@hono/auth-js/react";
 
 const DebridClientId = "X245A4XAIBGVM";
 
@@ -21,12 +21,14 @@ export const Logincomponent = memo(() => {
   const [startOnBoarding, setStartOnBoarding] = useState(false);
 
   const [oauthData, setOauthData] = useState<OauthData | null>(null);
-
   const handleOnboarding = useCallback(async () => {
     setStartOnBoarding(true);
-    const res = await http.get<OauthData>(
-      "/debrid/oauth/v2/device/code?client_id=X245A4XAIBGVM&new_credentials=yes",
-    );
+    const res = await http.get<OauthData>("/debrid/oauth/v2/device/code", {
+      params: {
+        client_id: DebridClientId,
+        new_credentials: "yes",
+      },
+    });
     setOauthData(res.data);
   }, []);
 
@@ -37,14 +39,18 @@ export const Logincomponent = memo(() => {
 
     queryFn: async ({ signal }) => {
       return (
-        await http.get<DebridCredentials>("/debrid/oauth/v2/device/credentials", {
-          params: {
-            client_id: DebridClientId,
-            code: oauthData?.device_code,
-          },
-          signal,
-          validateStatus: (status) => (status >= 200 && status < 299) || status === 403,
-        })
+        await http.get<DebridCredentials>(
+          "/debrid/oauth/v2/device/credentials",
+          {
+            params: {
+              client_id: DebridClientId,
+              code: oauthData?.device_code,
+            },
+            signal,
+            validateStatus: (status) =>
+              (status >= 200 && status < 299) || status === 403,
+          }
+        )
       ).data;
     },
   });
@@ -54,7 +60,7 @@ export const Logincomponent = memo(() => {
       data?.client_id
         ? `AUTH_REAL_DEBRID_ID=${data.client_id}\nAUTH_REAL_DEBRID_SECRET=${data.client_secret}`
         : "",
-    [data?.client_id],
+    [data?.client_id]
   );
 
   useEffect(() => {
@@ -80,7 +86,7 @@ export const Logincomponent = memo(() => {
       <div
         className={clsx(
           "m-auto flex items-center max-w-sm min-h-48 flex-col justify-center gap-4",
-          "relative bg-radial-1 bg-background rounded-lg shadow-md p-4",
+          "relative bg-radial-1 bg-background rounded-lg shadow-md p-4"
         )}
       >
         <Button fullWidth onPress={popUpSignin} className={buttonClasses}>

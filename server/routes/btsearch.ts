@@ -1,6 +1,14 @@
 import type { HonoBinding } from "@/types";
 import { Hono } from "hono";
-import { fallback, object, picklist, string, safeParse, pipe, transform } from "valibot";
+import {
+  fallback,
+  object,
+  picklist,
+  string,
+  safeParse,
+  pipe,
+  transform,
+} from "valibot";
 import axios, { isAxiosError } from "feaxios";
 import { XMLParser } from "fast-xml-parser";
 import { verifyAuth } from "@hono/auth-js";
@@ -24,19 +32,33 @@ type RssFeedResponse = {
 
 const QuerySchema = object({
   q: string(),
-  orderBy: fallback(picklist(["time", "size", "seeders", "relevance"]), "relevance"),
-  category: fallback(picklist(["all", "movie", "audio", "doc", "app", "other"]), "all"),
+  orderBy: fallback(
+    picklist(["time", "size", "seeders", "relevance"]),
+    "relevance"
+  ),
+  category: fallback(
+    picklist(["all", "movie", "audio", "doc", "app", "other"]),
+    "all"
+  ),
   page: fallback(pipe(string(), transform(Number)), 1),
 });
 
 function formatToUTC(dateString: string): string {
   const parsedDate = new Date(dateString);
   const utcYear: number = parsedDate.getUTCFullYear();
-  const utcMonth: string = (parsedDate.getUTCMonth() + 1).toString().padStart(2, "0");
+  const utcMonth: string = (parsedDate.getUTCMonth() + 1)
+    .toString()
+    .padStart(2, "0");
   const utcDay: string = parsedDate.getUTCDate().toString().padStart(2, "0");
   const utcHours: string = parsedDate.getUTCHours().toString().padStart(2, "0");
-  const utcMinutes: string = parsedDate.getUTCMinutes().toString().padStart(2, "0");
-  const utcSeconds: string = parsedDate.getUTCSeconds().toString().padStart(2, "0");
+  const utcMinutes: string = parsedDate
+    .getUTCMinutes()
+    .toString()
+    .padStart(2, "0");
+  const utcSeconds: string = parsedDate
+    .getUTCSeconds()
+    .toString()
+    .padStart(2, "0");
   const utcDateString: string = `${utcYear}-${utcMonth}-${utcDay}T${utcHours}:${utcMinutes}:${utcSeconds}Z`;
 
   return utcDateString;
@@ -81,16 +103,16 @@ router.get("/", verifyAuth(), async (c) => {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
   }
 
   const { q, page, orderBy, category } = result.output;
 
   try {
-    const fetchOptions = c.var.client
+    const fetchOptions = c.env.PROXY_URL
       ? {
-          client: c.var.client,
+          proxy: c.env.PROXY_URL,
         }
       : {};
     const reqPromises = [

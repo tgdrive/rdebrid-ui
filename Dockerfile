@@ -9,9 +9,9 @@ RUN pnpm install --frozen-lockfile
 RUN pnpm run build:client
 RUN pnpm run build:server
 
-FROM denoland/deno:distroless
+FROM oven/bun:distroless
 WORKDIR /app
 COPY --from=builder /app/build ./build
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 EXPOSE 8080
-CMD [ "run","--allow-all","build/server/index.js" ]
+CMD [ "run","build/server/index.js" ]

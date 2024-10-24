@@ -5,7 +5,6 @@ import clsx from "clsx";
 import { useDebridStore } from "@/ui/utils/store";
 import { Icons } from "@/ui/utils/icons";
 import { memo, useMemo } from "react";
-import { ForwardLink } from "@/ui/components/forward-link";
 import { scrollClasses } from "@/ui/utils/classes";
 import { CopyButton } from "@/ui/components/copy-button";
 
@@ -34,12 +33,19 @@ export const UnlockListItem = memo(({ item }: DownloadListItemProps) => {
     <div className="hover:bg-white/5 transition grid gap-x-4 gap-y-2 cursor-pointer grid-cols-6 rounded-3xl py-2 px-3">
       <div className="flex gap-3 w-full col-span-6 sm:col-span-4 items-center">
         <div className="size-10 p-2">
-          <Avatar title={item.host} className="flex-shrink-0 w-6 h-6 p-1" src={item.host_icon} />
+          <Avatar
+            title={item.host}
+            className="flex-shrink-0 w-6 h-6 p-1"
+            src={item.host_icon}
+          />
         </div>
 
         <p
           title={item.error ? "" : item.filename}
-          className={clsx("text-bold text-md truncate", !item.error && "capitalize")}
+          className={clsx(
+            "text-bold text-md truncate",
+            !item.error && "capitalize"
+          )}
         >
           {item.error ? item.link : item.filename}
         </p>
@@ -67,21 +73,6 @@ export const UnlockListItem = memo(({ item }: DownloadListItemProps) => {
             <Icons.CheckCircle className="text-success" />
           )}
         </div>
-        <Button
-          variant="light"
-          title={"Play"}
-          as={ForwardLink}
-          isIconOnly
-          isDisabled={!!item.error || item.streamable === 0}
-          to="/watch/$"
-          params={{
-            _splat: item.download?.replace("https://", ""),
-          }}
-          className="data-[hover=true]:bg-transparent"
-        >
-          <Icons.Play />
-        </Button>
-
         <Button
           variant="light"
           as={"a"}
@@ -112,7 +103,7 @@ export const DownloadPage = () => {
         .filter((item) => item.download)
         .map((item) => item.download)
         .join("\n"),
-    [files],
+    [files]
   );
 
   return (
@@ -126,7 +117,9 @@ export const DownloadPage = () => {
             variant="bordered"
             radius="full"
             selectedKey={tabId}
-            onSelectionChange={(key) => navigate({ params: { tabId: key as DownloadTab } })}
+            onSelectionChange={(key) =>
+              navigate({ params: { tabId: key as DownloadTab } })
+            }
           >
             {Object.keys(titleMap).map((tab) => (
               <Tab
@@ -149,7 +142,7 @@ export const DownloadPage = () => {
           className={clsx(
             "w-full flex flex-col gap-3 max-w-2xl mx-auto p-3",
             "rounded-lg ring-2 ring-white/10 bg-radial-1 bg-background",
-            "max-h-96 gap-4",
+            "max-h-96 gap-4"
           )}
         >
           <div className="flex justify-between pt-2">
@@ -159,7 +152,10 @@ export const DownloadPage = () => {
 
           <div
             data-scroll-restoration-id="scroll"
-            className={clsx("flex flex-col gap-4 px-2 py-3 overflow-y-auto", scrollClasses)}
+            className={clsx(
+              "flex flex-col gap-4 px-2 py-3 overflow-y-auto",
+              scrollClasses
+            )}
           >
             {files.map((item) => (
               <UnlockListItem key={item.id} item={item} />

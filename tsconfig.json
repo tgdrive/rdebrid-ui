@@ -21,7 +21,7 @@
       "@/*": ["./*"]
     },
     "strictNullChecks": true,
-    "types": ["unplugin-icons/types/react", "deno/ns"]
+    "types": ["unplugin-icons/types/react", "@types/bun"]
   },
   "include": ["vite-env.d.ts  ", "**/*.ts", "**/*.tsx", "vite.config.mts", "tailwind.config.ts"],
   "exclude": ["node_modules"]

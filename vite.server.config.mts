@@ -4,7 +4,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
   build: {
     lib: {
-      entry: ["server/deno.ts"],
+      entry: ["server/index.ts"],
       formats: ["es"],
       fileName: () => "index.js",
     },

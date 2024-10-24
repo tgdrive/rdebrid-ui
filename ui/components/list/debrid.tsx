@@ -60,7 +60,7 @@ function pathsToTree(data?: DebridTorrent) {
       }
 
       let childNode: FileNode | undefined = currentNode.nodes?.find(
-        (node: FileNode) => node.name === part,
+        (node: FileNode) => node.name === part
       );
 
       if (!childNode) {
@@ -98,7 +98,10 @@ export function FileSelectModal() {
   const [{ data, isLoading }, { data: avaliabilityData }] = useQueries({
     queries: [
       debridTorrentQueryOptions(item.id),
-      debridAvailabilityOptions(item.hash, item.status === "waiting_files_selection"),
+      debridAvailabilityOptions(
+        item.hash,
+        item.status === "waiting_files_selection"
+      ),
     ],
   });
 
@@ -109,7 +112,11 @@ export function FileSelectModal() {
   useEffect(() => {
     if (data?.files && item.status !== "waiting_files_selection") {
       actions.setSelectedPaths(
-        new Set(data.files.filter((x) => x.selected === 1).map((x) => `root${x.path}`) || []),
+        new Set(
+          data.files
+            .filter((x) => x.selected === 1)
+            .map((x) => `root${x.path}`) || []
+        )
       );
     } else if (
       data?.files &&
@@ -117,13 +124,14 @@ export function FileSelectModal() {
       avaliabilityData?.avaliabilities &&
       avaliabilityData?.avaliabilities.length > 0
     ) {
-      const currentAvaliabilityData = avaliabilityData.avaliabilities[currentAvaliability];
+      const currentAvaliabilityData =
+        avaliabilityData.avaliabilities[currentAvaliability];
       actions.setSelectedPaths(
         new Set(
           data.files
             .filter((x) => currentAvaliabilityData.find((y) => y.id === x.id))
-            .map((x) => `root${x.path}`) || [],
-        ),
+            .map((x) => `root${x.path}`) || []
+        )
       );
     }
   }, [data?.files, avaliabilityData, item.status, currentAvaliability]);
@@ -144,7 +152,9 @@ export function FileSelectModal() {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Torrent Files</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                Torrent Files
+              </ModalHeader>
               <ModalBody>
                 <div className="flex flex-col gap-2">
                   <div className="flex text-sm">
@@ -171,7 +181,9 @@ export function FileSelectModal() {
                             className="bg-white/5 rounded-full"
                             onPress={() => {
                               setCurrentAvaliability(
-                                (prev) => (prev + 1) % avaliabilityData.avaliabilities.length,
+                                (prev) =>
+                                  (prev + 1) %
+                                  avaliabilityData.avaliabilities.length
                               );
                             }}
                           >
@@ -185,7 +197,10 @@ export function FileSelectModal() {
                   {isLoading ? (
                     <Icons.Loading className="absolute left-1/2 top-1/2 size-10 -translate-x-1/2 -translate-y-1/2" />
                   ) : (
-                    <DebridTorrentTree rootNode={rootNode} status={item.status} />
+                    <DebridTorrentTree
+                      rootNode={rootNode}
+                      status={item.status}
+                    />
                   )}
                 </div>
               </ModalBody>
@@ -229,8 +244,13 @@ export default function DebridList() {
 
   const handlePageChange = useCallback(
     (page: number, replace = false) =>
-      navigate({ to: "/view", search: { page, type: params.type }, replace, resetScroll: true }),
-    [params.type],
+      navigate({
+        to: "/view",
+        search: { page, type: params.type },
+        replace,
+        resetScroll: true,
+      }),
+    [params.type]
   );
 
   const [selectMode, setSelectMode] = useState(false);
@@ -245,8 +265,13 @@ export default function DebridList() {
   }, [selectedIds, items]);
 
   const postLastPageDelete = useCallback(async () => {
-    if (params.page === totalPages && items.length > 0) {
-      if (ids.length === items.length) await handlePageChange(params.page - 1, true);
+    if (
+      totalPages > 1 &&
+      params.page === totalPages &&
+      items.length > 0 &&
+      ids.length === items.length
+    ) {
+      await handlePageChange(params.page - 1, true);
     }
   }, [items, totalPages, params.page, ids]);
 
@@ -264,20 +289,22 @@ export default function DebridList() {
   const topContent = React.useMemo(() => {
     return (
       <div className="flex flex-wrap gap-3 px-2">
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={params.page}
-          total={totalPages}
-          onChange={handlePageChange}
-          classNames={{
-            item: paginationItemClass,
-            prev: paginationItemClass,
-            next: paginationItemClass,
-          }}
-        />
+        {totalPages > 1 && (
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            color="primary"
+            page={params.page}
+            total={totalPages}
+            onChange={handlePageChange}
+            classNames={{
+              item: paginationItemClass,
+              prev: paginationItemClass,
+              next: paginationItemClass,
+            }}
+          />
+        )}
 
         <Button
           title="Select Mode"
@@ -320,7 +347,13 @@ export default function DebridList() {
         </Button>
       </div>
     );
-  }, [params.page, totalPages, params.type, deleteMutation.isPending, selectMode]);
+  }, [
+    params.page,
+    totalPages,
+    params.type,
+    deleteMutation.isPending,
+    selectMode,
+  ]);
 
   const List = params.type === "downloads" ? DowloadList : TorrentList;
   return (

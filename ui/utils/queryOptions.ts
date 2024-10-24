@@ -7,7 +7,12 @@ import type {
 } from "@/types";
 import http from "@/ui/utils/http";
 import type { Session } from "@auth/core/types";
-import { keepPreviousData, queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import type { BtDigParams, DebridParams } from "./schema";
 import pLimit from "p-limit";
 
@@ -40,7 +45,8 @@ export const debridItemsQueryOptions = (params: DebridParams) =>
     queryKey: ["debrid", params],
     queryFn: async ({ signal }) => getDebridItems(params, signal),
     placeholderData: keepPreviousData,
-    refetchInterval: params.page === 1 && params.type === "torrents" ? 5 * 1000 : false,
+    refetchInterval:
+      params.page === 1 && params.type === "torrents" ? 5 * 1000 : false,
   });
 
 export const debridTorrentQueryOptions = (id?: string) =>
@@ -49,7 +55,8 @@ export const debridTorrentQueryOptions = (id?: string) =>
     queryFn: async ({ signal }) => getDebridTorrent(id!, signal),
     enabled: !!id,
     select: (data) => {
-      const selectedFiles = data.files?.filter((file) => file.selected === 1) || [];
+      const selectedFiles =
+        data.files?.filter((file) => file.selected === 1) || [];
       for (let i = 0; i < selectedFiles.length; i++) {
         data.files![selectedFiles[i].id - 1].link = data.links[i];
       }
@@ -75,7 +82,13 @@ export const debridUnrestrictLinkOptions = (link: string, enabled = false) =>
   queryOptions({
     queryKey: ["debrid", "unrestrict", link],
     queryFn: async ({ signal }) =>
-      (await http.postForm<DebridUnlock>("/debrid/unrestrict/link", { link }, { signal })).data,
+      (
+        await http.postForm<DebridUnlock>(
+          "/debrid/unrestrict/link",
+          { link },
+          { signal }
+        )
+      ).data,
     enabled,
     staleTime: Number.POSITIVE_INFINITY,
   });
@@ -83,13 +96,17 @@ export const debridUnrestrictLinkOptions = (link: string, enabled = false) =>
 export const useDeleteDebrid = (
   view: "torrents" | "downloads",
   ids: string[],
-  onSuccess?: () => Promise<void>,
+  onSuccess?: () => Promise<void>
 ) => {
   const queryClient = useQueryClient();
   const limit = pLimit(2);
   return useMutation({
     mutationFn: () => {
-      return Promise.all(ids.map((id) => limit(() => http.delete(`/debrid/${view}/delete/${id}`))));
+      return Promise.all(
+        ids.map((id) =>
+          limit(() => http.delete(`/debrid/${view}/delete/${id}`))
+        )
+      );
     },
     onSuccess: async () => {
       if (onSuccess) {
@@ -130,8 +147,12 @@ const getDebridItems = async (params: DebridParams, signal: AbortSignal) => {
     signal,
     params: { page: params.page, limit: params.limit || 50 },
   });
-  const totalPages = Math.ceil(Number(res.headers.get("x-total-count")) / (params.limit || 50));
-  return { items: res.data, totalPages } as DebridReponse<"torrents" | "downloads">;
+  const totalPages = Math.ceil(
+    Number(res.headers.get("x-total-count")) / (params.limit || 50)
+  );
+  return { items: res.data || [], totalPages } as DebridReponse<
+    "torrents" | "downloads"
+  >;
 };
 
 const getDebridTorrent = async (id: string, signal: AbortSignal) => {
@@ -147,7 +168,7 @@ const unlockDebridTorrent = async (link: string, signal: AbortSignal) => {
     { link },
     {
       signal,
-    },
+    }
   );
   return res.data;
 };
@@ -160,7 +181,7 @@ const getTorrentAvaliability = async (magnet: string, signal: AbortSignal) => {
     `/debrid/torrents/instantAvailability/${magnet}`,
     {
       signal,
-    },
+    }
   );
   const availability = {} as TorrentAvaliability;
   Object.entries(res.data).forEach(([hash, value]) => {
@@ -170,7 +191,7 @@ const getTorrentAvaliability = async (magnet: string, signal: AbortSignal) => {
       availability.avaliabilities = avaliabilities.map((item) =>
         Object.entries(item).map(([key, value]) => {
           return { ...value, id: Number(key) };
-        }),
+        })
       );
     });
   });
