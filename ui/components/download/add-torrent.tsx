@@ -3,7 +3,10 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { useCallback, useRef, useState } from "react";
 import { magnetRegex } from "@/ui/utils/common";
 import http from "@/ui/utils/http";
-import { debridAvailabilityOptions, debridTorrentQueryOptions } from "@/ui/utils/queryOptions";
+import {
+  debridAvailabilityOptions,
+  debridTorrentQueryOptions,
+} from "@/ui/utils/queryOptions";
 import { useSelectModalStore } from "@/ui/utils/store";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "feaxios";
@@ -15,7 +18,6 @@ const initialformState = {
   torrentPath: "",
   magnet: "",
   hash: "",
-  torrentBytes: null as ArrayBuffer | null,
 };
 
 export const AddTorrent = () => {
@@ -37,21 +39,14 @@ export const AddTorrent = () => {
   });
 
   const { data, isFetched, isLoading, isRefetching, refetch } = useQuery(
-    debridAvailabilityOptions(magnet),
+    debridAvailabilityOptions(magnet)
   );
 
   const onSubmit = useCallback(async (data: typeof initialformState) => {
     try {
       let id = "";
       setIsSubmitting(true);
-      if (data.torrentBytes) {
-        const res = (
-          await http.put<{ id: string }>("/debrid/torrents/addTorrent", data.torrentBytes, {
-            params: { host: "real-debrid.com" },
-          })
-        ).data;
-        id = res.id;
-      } else {
+      if (data.magnet) {
         const res = (
           await http.postForm<{ id: string }>("/debrid/torrents/addMagnet", {
             magnet: data.magnet,
@@ -59,8 +54,9 @@ export const AddTorrent = () => {
         ).data;
         id = res.id;
       }
-
-      const torrent = await queryClient.ensureQueryData(debridTorrentQueryOptions(id));
+      const torrent = await queryClient.ensureQueryData(
+        debridTorrentQueryOptions(id)
+      );
       actions.setCurrentItem(torrent);
       actions.setOpen(true);
     } catch (error) {
@@ -74,22 +70,33 @@ export const AddTorrent = () => {
     }
   }, []);
 
-  const onTorrentChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setValue("torrentPath", file.name);
-      file.arrayBuffer().then((buffer) => {
-        setValue("torrentBytes", buffer);
-        decodeTorrentFile(new Uint8Array(buffer)).then((torrent) => {
-          setValue("magnet", toMagnetURI(torrent as any));
+  const onTorrentChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setValue("torrentPath", file.name);
+        file.arrayBuffer().then((buffer) => {
+          decodeTorrentFile(new Uint8Array(buffer)).then((torrent) => {
+            setValue("magnet", toMagnetURI(torrent as any));
+          });
         });
-      });
-    }
-  }, []);
+      }
+    },
+    []
+  );
 
   return (
-    <form className="size-full flex gap-6 flex-col" onSubmit={handleSubmit(onSubmit)}>
-      <input ref={inputRef} type="file" hidden accept=".torrent" onChange={onTorrentChange} />
+    <form
+      className="size-full flex gap-6 flex-col"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <input
+        ref={inputRef}
+        type="file"
+        hidden
+        accept=".torrent"
+        onChange={onTorrentChange}
+      />
       <div className="flex flex-col gap-6">
         <Controller
           name="torrentPath"
@@ -121,7 +128,8 @@ export const AddTorrent = () => {
           control={control}
           rules={{
             required: true,
-            validate: (value) => magnetRegex.test(value) || "Invalid magnet link",
+            validate: (value) =>
+              magnetRegex.test(value) || "Invalid magnet link",
           }}
           render={({ field, fieldState: { error } }) => (
             <Input
@@ -140,15 +148,22 @@ export const AddTorrent = () => {
         />
       </div>
       <div className="flex items-center gap-4">
-        <Button type="submit" isLoading={isSubmitting} className={buttonClasses}>
+        <Button
+          type="submit"
+          isLoading={isSubmitting}
+          className={buttonClasses}
+        >
           Add Torrent
         </Button>
         <Button
           onPress={() => refetch()}
+          isDisabled={!magnet}
           className={buttonClasses}
           isLoading={isLoading || isRefetching}
           startContent={
-            !(isLoading || isRefetching) ? <Icons.TorrentFilled className="size-[20px]" /> : null
+            !(isLoading || isRefetching) ? (
+              <Icons.TorrentFilled className="size-[20px]" />
+            ) : null
           }
         >
           Avaliability

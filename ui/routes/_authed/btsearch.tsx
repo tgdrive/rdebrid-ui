@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   Button,
   Dropdown,
@@ -40,6 +40,8 @@ const SearchInput = () => {
 
   const isFetching = useIsFetching({ queryKey: ["btsearch"] });
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   const onSubmit = useCallback(
     (e: React.BaseSyntheticEvent) => {
       e.preventDefault();
@@ -47,13 +49,15 @@ const SearchInput = () => {
         to: "/btsearch",
         search: (prev) => ({ ...prev, q: search, page: 1 }),
       });
+      if (inputRef.current) inputRef.current.blur();
     },
-    [search],
+    [search]
   );
 
   return (
     <form onSubmit={onSubmit} className="w-full">
       <Input
+        ref={inputRef}
         aria-label="Search"
         classNames={{
           inputWrapper: [
@@ -68,7 +72,13 @@ const SearchInput = () => {
         isClearable
         onClear={() => setSearch("")}
         startContent={
-          <div>{isFetching ? <Icons.Refresh className="animate-spin" /> : <Icons.Search />}</div>
+          <div>
+            {isFetching ? (
+              <Icons.Refresh className="animate-spin" />
+            ) : (
+              <Icons.Search />
+            )}
+          </div>
         }
         type="search"
         onChange={(e) => setSearch(e.target.value.trim())}
@@ -96,7 +106,9 @@ const sortOderList = [
 const CategorySelect = () => {
   const { category } = Route.useSearch();
 
-  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([category || "all"]));
+  const [selectedKeys, setSelectedKeys] = useState<Selection>(
+    new Set([category || "all"])
+  );
 
   const navigate = useNavigate();
 
@@ -109,7 +121,7 @@ const CategorySelect = () => {
         replace: true,
       });
     },
-    [setSelectedKeys],
+    [setSelectedKeys]
   );
 
   return (
@@ -120,14 +132,22 @@ const CategorySelect = () => {
       }}
     >
       <DropdownTrigger>
-        <Button title="Category" variant="flat" className="bg-white/5" isIconOnly>
+        <Button
+          title="Category"
+          variant="flat"
+          className="bg-white/5"
+          isIconOnly
+        >
           <Icons.Catergory />
         </Button>
       </DropdownTrigger>
       <DropdownMenu
         aria-label="Category"
         itemClasses={{
-          base: ["data-[hover=true]:bg-white/5", "data-[selectable=true]:focus:bg-white/5"],
+          base: [
+            "data-[hover=true]:bg-white/5",
+            "data-[selectable=true]:focus:bg-white/5",
+          ],
         }}
         disallowEmptySelection
         selectionMode="single"
@@ -148,7 +168,9 @@ const CategorySelect = () => {
 const SortBySelect = () => {
   const { orderBy } = Route.useSearch();
 
-  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([orderBy || "relevance"]));
+  const [selectedKeys, setSelectedKeys] = useState<Selection>(
+    new Set([orderBy || "relevance"])
+  );
 
   const navigate = useNavigate();
 
@@ -161,7 +183,7 @@ const SortBySelect = () => {
         replace: true,
       });
     },
-    [setSelectedKeys],
+    [setSelectedKeys]
   );
 
   return (
@@ -172,14 +194,22 @@ const SortBySelect = () => {
       }}
     >
       <DropdownTrigger>
-        <Button title="Order By" variant="flat" className="bg-white/5" isIconOnly>
+        <Button
+          title="Order By"
+          variant="flat"
+          className="bg-white/5"
+          isIconOnly
+        >
           <Icons.Sort />
         </Button>
       </DropdownTrigger>
       <DropdownMenu
         aria-label="Order By"
         itemClasses={{
-          base: ["data-[hover=true]:bg-white/5", "data-[selectable=true]:focus:bg-white/5"],
+          base: [
+            "data-[hover=true]:bg-white/5",
+            "data-[selectable=true]:focus:bg-white/5",
+          ],
         }}
         disallowEmptySelection
         selectionMode="single"

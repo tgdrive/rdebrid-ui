@@ -89,6 +89,16 @@ export type TorrentAvaliabilityResponse = {
   };
 };
 
+export type DebridFileNode = {
+  fileId?: number;
+  name: string;
+  children: DebridFileNode[];
+  selected: number;
+  isFolder: boolean;
+  path: string;
+  link?: string;
+};
+
 export type BTorrent = BtSearchResponse["torrents"][0];
 
 export type DebridItem = Nullish<BTorrent | DebridTorrent | DebridUnlock>;

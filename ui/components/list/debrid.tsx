@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import type { DebridTorrent, DebridTorrentFile, FileNode } from "@/types";
+import type { DebridFileNode, DebridTorrent, DebridTorrentFile } from "@/types";
 import { size2round } from "@/ui/utils/common";
 import {
   debridAvailabilityOptions,
@@ -19,7 +19,6 @@ import {
 } from "@nextui-org/react";
 import { useQueries, useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { DebridTorrentTree } from "../file-tree";
 import { useSelectModalStore } from "@/ui/utils/store";
 import { Icons } from "@/ui/utils/icons";
 import { paginationItemClass } from "@/ui/utils/classes";
@@ -27,100 +26,151 @@ import { getQueryClient } from "@/ui/utils/queryClient";
 import type { Selection } from "@nextui-org/react";
 import { DowloadList } from "./download";
 import { TorrentList } from "./torrent";
+import { DebridFileTree } from "../file-tree";
+import { useShallow } from "zustand/shallow";
 
-const getSelectedIds = (rootNode: FileNode, selectedPaths: Set<string>) => {
-  const selectedIds: number[] = [];
+function pathsToTree(files: DebridTorrentFile[]) {
+  const selectedPaths: string[] = [];
+  const selectedFileIds: number[] = [];
 
-  const traverseNode = (node: FileNode, path = "") => {
-    const fullPath = path ? `${path}/${node.name}` : node.name;
-    if (selectedPaths.has(fullPath) && node.id !== undefined) {
-      selectedIds.push(node.id);
-    }
-    node.nodes?.forEach((childNode) => traverseNode(childNode, fullPath));
+  const root: DebridFileNode = {
+    name: "root",
+    path: "/",
+    children: [],
+    selected: 0,
+    isFolder: true,
   };
 
-  traverseNode(rootNode);
-  return selectedIds;
-};
-
-function pathsToTree(data?: DebridTorrent) {
-  const root: FileNode = { name: "root", nodes: [] };
-
-  if (!data?.files) {
-    return root;
+  function findOrCreateNode(
+    parent: DebridFileNode[],
+    name: string,
+    fullPath: string,
+    isFolder: boolean = true
+  ) {
+    let node = parent.find((n) => n.path === fullPath);
+    if (!node) {
+      node = {
+        name,
+        path: fullPath,
+        children: [],
+        selected: 0,
+        isFolder,
+      };
+      parent.push(node);
+    }
+    return node;
   }
 
-  data.files.forEach((item: DebridTorrentFile) => {
-    const parts: string[] = item.path.replace(/^\//, "").split("/");
-    let currentNode: FileNode = root;
+  files.forEach((file) => {
+    const parts = file.path.split("/").filter(Boolean);
+    let currentLevel = root.children;
+    let currentPath = "";
 
-    parts.forEach((part: string, index: number) => {
-      if (!part) {
-        return;
-      }
+    for (let i = 0; i < parts.length - 1; i++) {
+      currentPath += "/" + parts[i];
+      const node = findOrCreateNode(currentLevel, parts[i], currentPath, true);
+      currentLevel = node.children;
+    }
 
-      let childNode: FileNode | undefined = currentNode.nodes?.find(
-        (node: FileNode) => node.name === part
-      );
+    const fileName = parts[parts.length - 1];
+    currentPath += "/" + fileName;
+    const fileNode = findOrCreateNode(
+      currentLevel,
+      fileName,
+      currentPath,
+      false
+    );
+    fileNode.fileId = file.id;
+    fileNode.selected = file.selected;
+    fileNode.link = file.link;
 
-      if (!childNode) {
-        childNode = {
-          name: part,
-          id: index === parts.length - 1 ? item.id : undefined,
-          link: item.link,
-        };
-
-        if (!currentNode.nodes) {
-          currentNode.nodes = [];
-        }
-        currentNode.nodes.push(childNode);
-      }
-
-      if (index < parts.length - 1 && !childNode.nodes) {
-        childNode.nodes = [];
-      }
-
-      currentNode = childNode;
-    });
+    if (file.selected === 1) {
+      selectedPaths.push(fileNode.path);
+      selectedFileIds.push(file.id);
+    }
   });
 
-  return root;
+  function updateFolderStatus(node: DebridFileNode): {
+    totalSelected: number;
+    totalFiles: number;
+  } {
+    if (!node.isFolder) {
+      return {
+        totalSelected: node.selected,
+        totalFiles: 1,
+      };
+    }
+
+    let totalSelected = 0;
+    let totalFiles = 0;
+
+    for (const child of node.children) {
+      const childStats = updateFolderStatus(child);
+      totalSelected += childStats.totalSelected;
+      totalFiles += childStats.totalFiles;
+    }
+
+    node.selected = totalFiles > 0 && totalSelected === totalFiles ? 1 : 0;
+
+    if (node.selected === 1) {
+      selectedPaths.push(node.path);
+    }
+
+    return {
+      totalSelected,
+      totalFiles,
+    };
+  }
+
+  updateFolderStatus(root);
+
+  return {
+    root,
+    paths: selectedPaths,
+  };
 }
 
 export function FileSelectModal() {
-  const item = useSelectModalStore((state) => state.item) as DebridTorrent;
-  const onOpenChange = useSelectModalStore((state) => state.actions.setOpen);
-  const isOpen = useSelectModalStore((state) => state.open);
-  const actions = useSelectModalStore((state) => state.actions);
-
-  const selectedPaths = useSelectModalStore((state) => state.selectedPaths);
+  const [item, actions, selectedPaths, isOpen] = useSelectModalStore(
+    useShallow((state) => [
+      state.item as DebridTorrent,
+      state.actions,
+      state.selectedPaths,
+      state.open,
+    ])
+  );
 
   const [{ data, isLoading }, { data: avaliabilityData }] = useQueries({
     queries: [
       debridTorrentQueryOptions(item.id),
       debridAvailabilityOptions(
         item.hash,
-        item.status === "waiting_files_selection"
+        item.status === "waiting_files_selection" ||
+          item.status === "magnet_conversion"
       ),
     ],
   });
 
-  const rootNode = useMemo(() => pathsToTree(data), [data?.files]);
+  const { root, paths } = useMemo(
+    () => pathsToTree(data?.files || []),
+    [data?.files]
+  );
+
+  useEffect(() => {
+    actions.setSelectedPaths(new Set(paths));
+  }, [paths]);
 
   const [currentAvaliability, setCurrentAvaliability] = useState(0);
 
   useEffect(() => {
     if (data?.files && item.status !== "waiting_files_selection") {
       actions.setSelectedPaths(
-        new Set(
-          data.files
-            .filter((x) => x.selected === 1)
-            .map((x) => `root${x.path}`) || []
-        )
+        new Set(data.files.filter((x) => x.selected === 1).map((x) => x.path))
       );
     } else if (
       data?.files &&
-      item.status === "waiting_files_selection" &&
+      (item.status === "waiting_files_selection" ||
+        item.status === "magnet_conversion") &&
       avaliabilityData?.avaliabilities &&
       avaliabilityData?.avaliabilities.length > 0
     ) {
@@ -130,11 +180,18 @@ export function FileSelectModal() {
         new Set(
           data.files
             .filter((x) => currentAvaliabilityData.find((y) => y.id === x.id))
-            .map((x) => `root${x.path}`) || []
+            .map((x) => x.path)
         )
       );
     }
   }, [data?.files, avaliabilityData, item.status, currentAvaliability]);
+
+  const ids = useMemo(() => {
+    return (
+      data?.files?.filter((x) => selectedPaths.has(x.path)).map((x) => x.id) ||
+      []
+    );
+  }, [data?.files, selectedPaths]);
 
   const createTorrent = useCreateDebrid();
 
@@ -143,7 +200,7 @@ export function FileSelectModal() {
       <Modal
         backdrop="transparent"
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        onOpenChange={actions.setOpen}
         classNames={{
           base: "max-w-[50rem] !bg-radial-1 bg-background",
           closeButton: "hover:bg-white/5 active:bg-white/5",
@@ -197,10 +254,7 @@ export function FileSelectModal() {
                   {isLoading ? (
                     <Icons.Loading className="absolute left-1/2 top-1/2 size-10 -translate-x-1/2 -translate-y-1/2" />
                   ) : (
-                    <DebridTorrentTree
-                      rootNode={rootNode}
-                      status={item.status}
-                    />
+                    <DebridFileTree root={root} status={item.status} />
                   )}
                 </div>
               </ModalBody>
@@ -212,7 +266,7 @@ export function FileSelectModal() {
                     createTorrent
                       .mutateAsync({
                         fileId: item.id,
-                        ids: getSelectedIds(rootNode, selectedPaths),
+                        ids,
                       })
                       .then(() => {
                         getQueryClient().invalidateQueries({

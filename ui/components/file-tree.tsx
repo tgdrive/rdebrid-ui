@@ -1,26 +1,20 @@
 import type React from "react";
-import { useState, useCallback, memo } from "react";
+import { useState, memo, useCallback } from "react";
 
 import { motion } from "framer-motion";
 import { Button, Checkbox } from "@nextui-org/react";
-import type { DebridTorrent, FileNode } from "@/types";
-import { useSelectModalStore } from "@/ui/utils/store";
+import type { DebridFileNode, DebridTorrent } from "@/types";
 import { Icons } from "@/ui/utils/icons";
 import { useQuery } from "@tanstack/react-query";
 import { debridUnrestrictLinkOptions } from "@/ui/utils/queryOptions";
-
-interface DebridTorrentItemProps {
-  node: FileNode;
-  path: string;
-  status: DebridTorrent["status"];
-  selectedPaths: Set<string>;
-  onSelectionChange: (path: string, isSelected: boolean) => void;
-}
+import { useSelectModalStore } from "../utils/store";
 
 const UnRestrictButton = memo(({ link }: { link: string }) => {
   const [enabled, setEnabled] = useState(false);
 
-  const { data, isLoading } = useQuery(debridUnrestrictLinkOptions(link, enabled));
+  const { data, isLoading } = useQuery(
+    debridUnrestrictLinkOptions(link, enabled)
+  );
 
   return (
     <>
@@ -52,36 +46,63 @@ const UnRestrictButton = memo(({ link }: { link: string }) => {
   );
 });
 
-export function DebridTorrentItem({
-  node,
-  path,
-  status,
-  selectedPaths,
-  onSelectionChange,
-}: DebridTorrentItemProps) {
+interface DebridTreeItemProps {
+  node: DebridFileNode;
+  status: DebridTorrent["status"];
+}
+
+const getAllChildKeys = (node: DebridFileNode) => {
+  let keys = new Set([node.path]);
+  if (node.children) {
+    node.children.forEach((child) => {
+      let childKeys = getAllChildKeys(child);
+      for (let key of childKeys) {
+        keys.add(key);
+      }
+    });
+  }
+  return keys;
+};
+
+export function DebridTreeItem({ status, node }: DebridTreeItemProps) {
   const [isOpen, setIsOpen] = useState(true);
-  const fullPath = path ? `${path}/${node.name}` : node.name;
-  const isSelected = selectedPaths.has(fullPath);
+
+  const selectedPaths = useSelectModalStore((state) => state.selectedPaths);
+
+  const actions = useSelectModalStore((state) => state.actions);
 
   const handleSelectionChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      onSelectionChange(fullPath, e.target.checked);
+      const newSelectedKeys = new Set(selectedPaths);
+      if (e.target.checked) {
+        const childKeys = getAllChildKeys(node);
+        childKeys.forEach((key) => newSelectedKeys.add(key));
+      } else {
+        const childKeys = getAllChildKeys(node);
+        childKeys.forEach((key) => newSelectedKeys.delete(key));
+      }
+      actions.setSelectedPaths(newSelectedKeys);
     },
-    [fullPath, onSelectionChange],
+    [selectedPaths]
   );
 
+  const isSelected = selectedPaths.has(node.path);
+
   return (
-    <li key={node.name}>
+    <li key={node.path}>
       <span className="flex items-center gap-1.5 py-1">
         <Checkbox
           className="m-0 p-0"
           isSelected={isSelected}
           disableAnimation
           size="sm"
-          isDisabled={status !== "waiting_files_selection"}
+          isDisabled={
+            status !== "waiting_files_selection" &&
+            status !== "magnet_conversion"
+          }
           onChange={handleSelectionChange}
         />
-        {node.nodes && node.nodes.length > 0 && (
+        {node.children && node.children.length > 0 && (
           <Button
             isIconOnly
             onPress={() => setIsOpen(!isOpen)}
@@ -97,8 +118,8 @@ export function DebridTorrentItem({
             </motion.span>
           </Button>
         )}
-        {node.nodes && <Icons.Folder className="text-primary-500" />}
-        {(!node.nodes || node.nodes.length === 0) && isSelected && status === "downloaded" && (
+        {node.isFolder && <Icons.Folder className="text-primary-500" />}
+        {!node.isFolder && isSelected && status === "downloaded" && (
           <UnRestrictButton link={node.link!} />
         )}
         <p title={node.name} className="text-sm truncate">
@@ -106,16 +127,13 @@ export function DebridTorrentItem({
         </p>
       </span>
 
-      {isOpen && node.nodes && (
+      {isOpen && node.children.length > 0 && (
         <ul className="pl-6 overflow-hidden flex flex-col justify-end">
-          {node.nodes.map((childNode) => (
-            <DebridTorrentItem
+          {node.children.map((childNode) => (
+            <DebridTreeItem
+              key={childNode.path}
               node={childNode}
-              key={childNode.name}
-              path={fullPath}
               status={status}
-              selectedPaths={selectedPaths}
-              onSelectionChange={onSelectionChange}
             />
           ))}
         </ul>
@@ -124,68 +142,15 @@ export function DebridTorrentItem({
   );
 }
 
-export function DebridTorrentTree({
-  rootNode,
-  status,
-}: { rootNode: FileNode; status: DebridTorrent["status"] }) {
-  const actions = useSelectModalStore((state) => state.actions);
+interface DebridFileTreeProps {
+  root: DebridFileNode;
+  status: DebridTorrent["status"];
+}
 
-  const selectedPaths = useSelectModalStore((state) => state.selectedPaths);
-
-  const updateSelectionRecursively = useCallback(
-    (node: FileNode, path: string, isSelected: boolean, newSelection: Set<string>) => {
-      const fullPath = path ? `${path}/${node.name}` : node.name;
-      if (isSelected) {
-        newSelection.add(fullPath);
-      } else {
-        newSelection.delete(fullPath);
-      }
-
-      if (node.nodes) {
-        node.nodes.forEach((childNode) => {
-          updateSelectionRecursively(childNode, fullPath, isSelected, newSelection);
-        });
-      }
-    },
-    [],
-  );
-
-  const handleSelectionChange = useCallback(
-    (path: string, isSelected: boolean) => {
-      const newSelection = new Set(selectedPaths);
-
-      const findAndUpdateNode = (node: FileNode, currentPath = "") => {
-        const nodePath = currentPath ? `${currentPath}/${node.name}` : node.name;
-        if (nodePath === path) {
-          updateSelectionRecursively(node, currentPath, isSelected, newSelection);
-          return true;
-        }
-        if (node.nodes) {
-          for (const childNode of node.nodes) {
-            if (findAndUpdateNode(childNode, nodePath)) {
-              return true;
-            }
-          }
-        }
-        return false;
-      };
-
-      findAndUpdateNode(rootNode);
-      actions.setSelectedPaths(newSelection);
-    },
-    [rootNode, selectedPaths, updateSelectionRecursively],
-  );
-
+export function DebridFileTree({ root, status }: DebridFileTreeProps) {
   return (
     <ul>
-      <DebridTorrentItem
-        node={rootNode}
-        key={rootNode.name}
-        path=""
-        status={status}
-        selectedPaths={selectedPaths}
-        onSelectionChange={handleSelectionChange}
-      />
+      <DebridTreeItem status={status} node={root} />
     </ul>
   );
 }

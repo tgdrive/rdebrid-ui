@@ -19,8 +19,10 @@ export const useSelectModalStore = create<SelectModalState>((set) => ({
   selectedPaths: new Set(),
   actions: {
     setOpen: (open: boolean) => set((state) => ({ ...state, open })),
-    setCurrentItem: (item: DebridTorrent) => set((state) => ({ ...state, item })),
-    setSelectedPaths: (selectedPaths: Set<string>) => set((state) => ({ ...state, selectedPaths })),
+    setCurrentItem: (item: DebridTorrent) =>
+      set((state) => ({ ...state, item })),
+    setSelectedPaths: (selectedPaths: Set<string>) =>
+      set((state) => ({ ...state, selectedPaths })),
   },
 }));
 
@@ -60,10 +62,7 @@ export const useDebridStore = create(
               state.dropdown.open = false;
               state.dropdown.cords = { x: 0, y: 0 };
             }),
-          setDropdownCords: (payload: {
-            x: number;
-            y: number;
-          }) =>
+          setDropdownCords: (payload: { x: number; y: number }) =>
             set((state) => {
               state.dropdown.cords = payload;
             }),
@@ -72,7 +71,7 @@ export const useDebridStore = create(
               state.currentDebridItem = item;
             }),
         },
-      }),
-    ),
-  ),
+      })
+    )
+  )
 );

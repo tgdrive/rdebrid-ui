@@ -57,7 +57,10 @@ router.use("*", verifyAuth(), async (c) => {
   url.pathname = `/rest/1.0${url.pathname.replace("/api/debrid", "")}`;
 
   const headers = new Headers();
-  headers.set("Authorization", `Bearer ${c.env.DEBRID_TOKEN || user?.access_token}`);
+  headers.set(
+    "Authorization",
+    `Bearer ${c.env.DEBRID_TOKEN || user?.access_token}`
+  );
 
   if (
     methods.includes(c.req.method) &&
@@ -75,13 +78,10 @@ router.use("*", verifyAuth(), async (c) => {
     return fetchApiResponse(url.toString(), requestOptions);
   }
 
-  const requestOptions = {
+  return fetchApiResponse(url.toString(), {
     method: c.req.method,
     headers,
-    ...(methods.includes(c.req.method) && { body: c.req.raw.body, duplex: "half" }),
-  };
-
-  return fetchApiResponse(url.toString(), requestOptions);
+  });
 });
 
 export default router;
