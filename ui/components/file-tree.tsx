@@ -52,11 +52,11 @@ interface DebridTreeItemProps {
 }
 
 const getAllChildKeys = (node: DebridFileNode) => {
-  let keys = new Set([node.path]);
+  const keys = new Set([node.path]);
   if (node.children) {
     node.children.forEach((child) => {
-      let childKeys = getAllChildKeys(child);
-      for (let key of childKeys) {
+      const childKeys = getAllChildKeys(child);
+      for (const key of childKeys) {
         keys.add(key);
       }
     });

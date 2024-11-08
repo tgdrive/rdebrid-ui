@@ -22,6 +22,29 @@ import type { Selection } from "@nextui-org/react";
 import toast from "react-hot-toast";
 import { useNavigate } from "@tanstack/react-router";
 
+const items = [
+  {
+    key: "view",
+    label: "View",
+    icon: <Icons.Eye />,
+  },
+  {
+    key: "unrestict",
+    label: "Unrestict",
+    icon: <Icons.DownloadDashed />,
+  },
+  {
+    key: "copy",
+    label: "Copy",
+    icon: <Icons.Copy />,
+  },
+  {
+    key: "delete",
+    label: "Delete",
+    icon: <Icons.Delete />,
+  },
+];
+
 const TorrentDropdown = () => {
   const { open, cords, item, actions } = useDebridStore(
     useShallow((state) => ({
@@ -85,19 +108,13 @@ const TorrentDropdown = () => {
           base: ["data-[hover=true]:bg-white/5", "data-[selectable=true]:focus:bg-white/5"],
         }}
         onAction={onAction}
+        items={items}
       >
-        <DropdownItem key="view" startContent={<Icons.Eye />}>
-          View Files
-        </DropdownItem>
-        <DropdownItem key="unrestict" startContent={<Icons.DownloadDashed />}>
-          Unrestict Links
-        </DropdownItem>
-        <DropdownItem key="copy" startContent={<Icons.Copy />}>
-          Copy Links
-        </DropdownItem>
-        <DropdownItem key="delete" startContent={<Icons.Delete />}>
-          Delete
-        </DropdownItem>
+        {(item) => (
+          <DropdownItem key={item.key} startContent={item.icon}>
+            {item.label}
+          </DropdownItem>
+        )}
       </DropdownMenu>
     </Dropdown>
   );

@@ -45,7 +45,7 @@ function pathsToTree(files: DebridTorrentFile[]) {
     parent: DebridFileNode[],
     name: string,
     fullPath: string,
-    isFolder: boolean = true
+    isFolder = true
   ) {
     let node = parent.find((n) => n.path === fullPath);
     if (!node) {
@@ -67,13 +67,13 @@ function pathsToTree(files: DebridTorrentFile[]) {
     let currentPath = "";
 
     for (let i = 0; i < parts.length - 1; i++) {
-      currentPath += "/" + parts[i];
+      currentPath += `/${parts[i]}`;
       const node = findOrCreateNode(currentLevel, parts[i], currentPath, true);
       currentLevel = node.children;
     }
 
     const fileName = parts[parts.length - 1];
-    currentPath += "/" + fileName;
+    currentPath += `/${fileName}`;
     const fileNode = findOrCreateNode(
       currentLevel,
       fileName,

@@ -27,13 +27,44 @@ import type { Selection } from "@nextui-org/react";
 import { useNavigate } from "@tanstack/react-router";
 import toast from "react-hot-toast";
 
+const items = [
+  {
+    key: "original",
+    label: "Open Link",
+    icon: <Icons.ExternalLink />,
+  },
+  {
+    key: "play",
+    label: "Play",
+    icon: <Icons.Play />,
+  },
+  {
+    key: "vlc",
+    label: "Open",
+    icon: <Icons.Vlc />,
+  },
+  {
+    key: "download",
+    label: "Download",
+    icon: <Icons.Download />,
+  },
+  {
+    key: "copy",
+    label: "Copy Link",
+    icon: <Icons.Copy />,
+  },
+  {
+    key: "delete",
+    label: "Delete",
+    icon: <Icons.Delete />,
+  },
+];
+
 const DownloadDropdown = () => {
   const { open, cords } = useDebridStore((state) => state.dropdown);
   const actions = useDebridStore((state) => state.actions);
 
-  const item = useDebridStore(
-    (state) => state.currentDebridItem
-  ) as DebridUnlock;
+  const item = useDebridStore((state) => state.currentDebridItem) as DebridUnlock;
 
   const mutation = useDeleteDebrid("downloads", [item.id]);
 
@@ -61,11 +92,13 @@ const DownloadDropdown = () => {
             error: {
               duration: 2000,
             },
-          }
+          },
         );
+      } else if (key === "vlc") {
+        navigateToExternalUrl(`vlc://${item.download}`);
       }
     },
-    [mutation]
+    [mutation],
   );
   return (
     <Dropdown
@@ -76,38 +109,21 @@ const DownloadDropdown = () => {
       }}
     >
       <DropdownTrigger>
-        <button
-          type="button"
-          className="fixed"
-          style={{ top: cords.y, left: cords.x }}
-        />
+        <button type="button" className="fixed" style={{ top: cords.y, left: cords.x }} />
       </DropdownTrigger>
       <DropdownMenu
         aria-label="Options"
         itemClasses={{
-          base: [
-            "data-[hover=true]:bg-white/5",
-            "data-[selectable=true]:focus:bg-white/5",
-          ],
+          base: ["data-[hover=true]:bg-white/5", "data-[selectable=true]:focus:bg-white/5"],
         }}
         onAction={onAction}
-        disabledKeys={[!item.streamable ? "play" : ""]}
+        items={item.streamable ? items : items.filter((i) => i.key !== "play" && i.key !== "vlc")}
       >
-        <DropdownItem key="original" startContent={<Icons.ExternalLink />}>
-          Open Link
-        </DropdownItem>
-        <DropdownItem key="play" startContent={<Icons.Play />}>
-          Play
-        </DropdownItem>
-        <DropdownItem key="download" startContent={<Icons.Download />}>
-          Download
-        </DropdownItem>
-        <DropdownItem key="copy" startContent={<Icons.Copy />}>
-          Copy Link
-        </DropdownItem>
-        <DropdownItem key="delete" startContent={<Icons.Delete />}>
-          Delete
-        </DropdownItem>
+        {(item) => (
+          <DropdownItem key={item.key} startContent={item.icon}>
+            {item.label}
+          </DropdownItem>
+        )}
       </DropdownMenu>
     </Dropdown>
   );
@@ -119,27 +135,19 @@ interface DownloadListProps {
   setSelectedIds: SetValue<Selection>;
   selectMode: boolean;
 }
-export function DowloadList({
-  items,
-  selectedIds,
-  setSelectedIds,
-  selectMode,
-}: DownloadListProps) {
+export function DowloadList({ items, selectedIds, setSelectedIds, selectMode }: DownloadListProps) {
   const { open, actions } = useDebridStore(
     useShallow((state) => ({
       open: state.dropdown.open,
       actions: state.actions,
-    }))
+    })),
   );
 
-  const onDropDownOpen = useCallback(
-    (e: React.MouseEvent, item: DebridUnlock) => {
-      actions.setCurrentDebridItem(item);
-      actions.openDropdown();
-      actions.setDropdownCords({ x: e.clientX, y: e.clientY });
-    },
-    []
-  );
+  const onDropDownOpen = useCallback((e: React.MouseEvent, item: DebridUnlock) => {
+    actions.setCurrentDebridItem(item);
+    actions.openDropdown();
+    actions.setDropdownCords({ x: e.clientX, y: e.clientY });
+  }, []);
 
   const renderEmptyState = () => (
     <p className="text-center text-lg text-zinc-400 absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -151,10 +159,7 @@ export function DowloadList({
     <>
       {open && <DownloadDropdown />}
       <ListBox
-        className={clsx(
-          "overflow-auto size-full gap-4 p-2 flex flex-col",
-          scrollClasses
-        )}
+        className={clsx("overflow-auto size-full gap-4 p-2 flex flex-col", scrollClasses)}
         items={items}
         selectionMode={selectMode ? "multiple" : "single"}
         selectionBehavior="toggle"
@@ -167,7 +172,7 @@ export function DowloadList({
           <ListBoxItem
             className={clsx(
               "rounded-3xl data-[selected=true]:bg-white/5 data-[hovered=true]:bg-white/5 p-2",
-              dataFocusVisibleClasses
+              dataFocusVisibleClasses,
             )}
             key={item.id}
             textValue={item.filename}
@@ -175,7 +180,7 @@ export function DowloadList({
             {({ isSelected }) => (
               <>
                 <div className="grid gap-x-4 gap-y-1 md:gap-y-0 cursor-pointer grid-cols-6 rounded-3xl p-2">
-                  <div className="col-start-1 col-span-6 sm:col-span-5 flex items-center gap-2">
+                  <div className="col-start-1 col-span-6 sm:col-span-5 flex gap-2">
                     <div
                       title={item.host}
                       className="flex-shrink-0 size-6 p-1 bg-primary rounded-full"
@@ -196,8 +201,7 @@ export function DowloadList({
                         size="lg"
                         classNames={{
                           base: "m-0",
-                          wrapper:
-                            "before:rounded-full after:rounded-full mr-0",
+                          wrapper: "before:rounded-full after:rounded-full mr-0",
                         }}
                         icon={<Icons.CheckCircle />}
                       />
@@ -216,12 +220,8 @@ export function DowloadList({
                   </div>
 
                   <div className="items-center flex col-start-1 col-span-5">
-                    <p className="text-sm text-zinc-400 min-w-20">
-                      {size2round(item.filesize)}
-                    </p>
-                    <p className="text-sm text-zinc-400">
-                      {formattedLongDate(item.generated)}
-                    </p>
+                    <p className="text-sm text-zinc-400 min-w-20">{size2round(item.filesize)}</p>
+                    <p className="text-sm text-zinc-400">{formattedLongDate(item.generated)}</p>
                   </div>
                 </div>
               </>

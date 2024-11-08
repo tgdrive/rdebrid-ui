@@ -3,5 +3,8 @@
   "editor.formatOnSave": true,
   "editor.formatOnPaste": false,
   "typescript.tsdk": "node_modules\\typescript\\lib",
-  "tailwindCSS.classAttributes": ["class", "className", "classNames"]
+  "tailwindCSS.classAttributes": ["class", "className", "classNames"],
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  }
 }

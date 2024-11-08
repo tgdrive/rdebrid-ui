@@ -16,6 +16,7 @@ import TablerCircleChevronRight from "~icons/tabler/circle-chevron-right";
 import TablerCircleCheckFilled from "~icons/tabler/circle-check-filled";
 import TablerExclamationCircleFilled from "~icons/tabler/exclamation-circle-filled";
 import LineMdDownloadingLoop from "~icons/line-md/downloading-loop";
+import LineMdUploadingLoop from '~icons/line-md/uploading-loop';
 import GrommetIconsSelect from "~icons/grommet-icons/select";
 import TablerEye from "~icons/tabler/eye";
 import TadpoleIcon from "~icons/svg-spinners/tadpole";
@@ -61,7 +62,7 @@ export const Icons = {
   ChevronRight: TablerChevronRight,
   CheckCircle: TablerCircleCheckFilled,
   Exclamation: TablerExclamationCircleFilled,
-  AnimatedUpload: LineMdDownloadingLoop,
+  AnimatedUpload: LineMdUploadingLoop,
   AnimatedDownload: LineMdDownloadingLoop,
   SelectWait: GrommetIconsSelect,
   Eye: TablerEye,

@@ -73,11 +73,11 @@ The application requires the following environment variables:
 | `FORWARD_IP`  | Forward Debrid IP.
 | `DEBRID_TOKEN`  | Use Personal Debrid Token instead of Oauth Token which has limited scopes permissions .
 | `PORT`  | Change Default 8080 Server Port.
-| `PROXY_URL`  | Use proxy for `BTdig` indexer if its blocked in your region(only works on docker or local deployment).
+| `PROXY_URL`  | Use proxy for `BTdig` indexer if its blocked in your region(only works on docker and local deployment).
 
 **You can generate `AUTH_SECRET` from [here](https://generate-secret.vercel.app/64).**
 
-**Note**: You must enter registered real debrid IP  in  `FORWARD_IP` if you are deploying app remotely.Registered IP can be found in Real-Debrid account settings.
+**Note**: You must enter registered real debrid IP  in  `FORWARD_IP` if you are deploying app remotely.Registered IP can be found in Real-Debrid account settings.It's not needed when you are using app behind cloudflare dns or using cloudflare services like pages and workers , IP will be taken from `CF-Connecting-IP` header and forwarded to debrid api.
 
 ## Contributing
 

@@ -26,6 +26,33 @@ import http from "@/ui/utils/http";
 import { toast } from "react-hot-toast";
 import type { BTorrent } from "@/types";
 
+const items = [
+  {
+    key: "link",
+    label: "Open Link",
+    icon: <Icons.ExternalLink />,
+  },
+  {
+    key: "add",
+    label: "Add Torrent",
+    icon: <Icons.CirclePlus />,
+  },
+  {
+    key: "availability",
+    label: "Check Availability",
+    icon: <Icons.CheckZoom />,
+  },
+  {
+    key: "copy",
+    label: "Copy Magnet",
+    icon: <Icons.Copy />,
+  },
+  {
+    key: "magnet",
+    label: "Open Magnet",
+    icon: <Icons.TorrentOutline />,
+  },
+];
 const ControlDropdown = () => {
   const { open, cords } = useDebridStore((state) => state.dropdown);
   const { closeDropdown } = useDebridStore((state) => state.actions);
@@ -110,22 +137,13 @@ const ControlDropdown = () => {
           base: ["data-[hover=true]:bg-white/5", "data-[selectable=true]:focus:bg-white/5"],
         }}
         onAction={onAction}
+        items={items}
       >
-        <DropdownItem key="link" startContent={<Icons.ExternalLink />}>
-          Open Link
-        </DropdownItem>
-        <DropdownItem key="add" startContent={<Icons.CirclePlus />}>
-          Add Torrent
-        </DropdownItem>
-        <DropdownItem key="availability" startContent={<Icons.CheckZoom />}>
-          Check Availability
-        </DropdownItem>
-        <DropdownItem key="copy" startContent={<Icons.Copy />}>
-          Copy Magnet
-        </DropdownItem>
-        <DropdownItem key="magnet" startContent={<Icons.TorrentOutline />}>
-          Open Magnet
-        </DropdownItem>
+        {(item) => (
+          <DropdownItem key={item.key} startContent={item.icon}>
+            {item.label}
+          </DropdownItem>
+        )}
       </DropdownMenu>
     </Dropdown>
   );
